@@ -1,8 +1,8 @@
 from tkinter import *
 from gameObjects.ball import Ball, SuperBall
-from gameObjects.block import Block
+from gameObjects.block import Block, generateBlocks
 from gameObjects.ui import UserInterface
-from gameObjects.board import createBoard
+from gameObjects.board import createBoard, moveBoard
 import random
 import os
 
@@ -16,23 +16,24 @@ def init(data):
     data.gameOver = False
     # generate between 2 and 4 blocks on the top row initially
     countInitialBlocks = random.randint(2, 4)
-    while countInitialBlocks > 0:
-        cols = (data.width-data.margin)//data.dimension-1
-        randomCol = random.randint(0, cols)
-        if not data.board[0][randomCol]:
-            data.board[0][randomCol] = Block(0, randomCol, data.margin)
-            countInitialBlocks -= 1
+    generateBlocks(countInitialBlocks, data.width, data.margin,
+                   data.dimension, data.board)
 
 
 def mousePressed(event, data):
-    pass
+    for row in data.board:
+        for block in row:
+            if block: block.moveDown()
+    moveBoard(data.board, data)
+    print(len(data.board))
 
 def keyPressed(event, data):
+    if data.gameOver: return
     if event.keysym == 'r':
         init(data)
 
 def timerFired(data):
-    pass
+    print(data.gameOver)
 
 def redrawAll(canvas, data):
     # if not startGame:
