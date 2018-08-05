@@ -1,5 +1,6 @@
 import math
 
+
 class Ball(object):
     def __init__(self, color, startX, canvasHeight, canvasMargin):
         # user-defined color in customization
@@ -8,7 +9,7 @@ class Ball(object):
         self.radius = 5
         # balls start at where the last ball landed, at the bottom of canvas
         self.cx = startX
-        self.cy = canvasHeight - canvasMargin - self.radius - 2
+        self.cy = canvasHeight - canvasMargin - self.radius - 5
         # change
         self.dx = 0
         self.dy = 0
@@ -34,16 +35,18 @@ class Ball(object):
 
     def collisionWithBorder(self, canvasWidth, canvasHeight, canvasMargin):
         # top border: reverse vertical direction
-        if self.cy-self.radius <= canvasMargin:
+        if self.cy-self.radius < canvasMargin:
             self.dy *= -1
         # left border: change quadrant
-        elif self.cx-self.radius <= canvasMargin:
+        if self.cx-self.radius < canvasMargin and self.dy > 0:
             self.move(self.angle, 1)
+        if self.cx-self.radius < canvasMargin and self.dy < 0:
+            self.move(self.angle, 2)
         # right border: change quadrant
-        elif self.cx+self.radius >= canvasWidth-2*canvasMargin:
+        elif self.cx+self.radius > canvasWidth-2*canvasMargin:
             self.move(self.angle, 2)
         # bottom border: remove ball by returning False
-        elif self.cy+self.radius >= canvasHeight-2*canvasMargin:
+        elif self.cy+self.radius > canvasHeight-canvasMargin:
             return False
         # otherwise keep ball by returning True
         return True

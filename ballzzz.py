@@ -63,10 +63,9 @@ def keyPressed(event, data):
 def timerFired(data):
     # update ball movement
     data.ball.updatePos()
-    temp = data.ball.collisionWithBorder(data.width, data.height, data.margin)
-    print(temp)
-    if not temp:
-        print('k')
+    collisionStatus = data.ball.collisionWithBorder(data.width,
+                                                    data.height, data.margin)
+    if not collisionStatus:
         data.ball = Ball("hotPink", 66, data.height, data.margin)
     for row in range(len(data.board)):
         for col in range(len(data.board[0])):
