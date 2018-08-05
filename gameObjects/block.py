@@ -1,5 +1,8 @@
 import random
 
+from gameObjects.ball import SuperBall
+
+
 class Block(object):
     def __init__(self, row, col, margin, countBalls):
         colors = ('green2', 'hotPink')
@@ -25,6 +28,12 @@ class Block(object):
     def moveDown(self):
         self.row += 1
         self.updatePos()
+
+    def onCollision(self, ball):
+        if isinstance(ball, SuperBall):
+            self.number = 0
+        else:
+            self.number -= 1
 
 
 def generateBlocks(countBlocks, data):

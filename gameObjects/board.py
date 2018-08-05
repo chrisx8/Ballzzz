@@ -2,6 +2,7 @@ import random
 
 from gameObjects.block import generateBlocks
 
+
 def createBoard(canvasWidth, canvasHeight, margin):
     newBoard = []
     # each cell is 40px*40px
@@ -25,6 +26,8 @@ def moveBoard(data):
     # add random blocks on top row
     # remove bottom row
     data.board.pop()
+    # score+1 on each move
+    data.score += 1
     # game over if current bottom row isn't empty
     for cell in data.board[len(data.board)-1]:
         if cell is not None:

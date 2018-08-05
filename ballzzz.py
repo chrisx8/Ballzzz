@@ -1,10 +1,10 @@
-from tkinter import *
-from gameObjects.ball import Ball, SuperBall
-from gameObjects.block import Block, generateBlocks
-from gameObjects.ui import UserInterface
-from gameObjects.board import createBoard, moveBoard
-import random
+import math
 import os
+from tkinter import *
+
+from gameObjects.ball import Ball
+from gameObjects.board import *
+from gameObjects.ui import UserInterface
 
 
 def init(data):
@@ -15,11 +15,11 @@ def init(data):
     data.ui = UserInterface(data.width, data.height)
     # number of available balls
     data.countBalls = 1
-    data.balls = [Ball("green2", 42, data.height, data.margin)]
+    data.ball = Ball("green2", 66, data.height, data.margin)
     data.board = createBoard(data.width, data.height, data.margin)
     data.startGame = False
     data.gameOver = False
-    data.score = 0
+    data.score = 1
     # generate between 2 and 4 blocks on the top row initially
     countInitialBlocks = random.randint(2, 4)
     generateBlocks(countInitialBlocks, data)
@@ -27,42 +27,97 @@ def init(data):
 
 def mousePressed(event, data):
     if data.gameOver or not data.startGame: return
-    for row in data.board:
-        for block in row:
-            if block: block.moveDown()
-    moveBoard(data)
-    print(len(data.board))
+    ballX, ballY = data.ball.cx, data.ball.cy
+    distanceToClick = math.sqrt((ballX-event.x)**2 + (ballY-event.y)**2)
+    # formula = distanceToClick / sin(pi/2) = (e.y-ballY) / sin(angle)
+    sinAngle = abs(event.y-ballY) / distanceToClick
+    angle = math.asin(sinAngle)
+    if event.x >= ballX:
+        data.ball.move(angle, 1)
+    else:
+        data.ball.move(angle, 2)
 
 
 def keyPressed(event, data):
+    # press R to restart at any time after game started
+    if data.startGame and event.keysym == 'r':
+        init(data)
+        data.startGame = True
+    # start game
     if not data.startGame and event.keysym == 's':
         data.startGame = True
-        return
-    if event.keysym == 'r':
-        init(data)
+    # ignore rest when game is over or when game isn't started
+    if data.gameOver or not data.startGame: return
+    # TODO: TESTING CODE BELOW. REMOVE AFTER TESTING
+    if event.keysym == 'c':
+        for row in data.board:
+            for block in row:
+                if block: block.onCollision(data.ball)
+    if event.keysym == 'm':
+        for row in data.board:
+            for block in row:
+                if block: block.moveDown()
+        moveBoard(data)
 
 
 def timerFired(data):
-    pass
+    # update ball movement
+    data.ball.updatePos()
+    temp = data.ball.collisionWithBorder(data.width, data.height, data.margin)
+    print(temp)
+    if not temp:
+        print('k')
+        data.ball = Ball("hotPink", 66, data.height, data.margin)
+    for row in range(len(data.board)):
+        for col in range(len(data.board[0])):
+            if data.board[row][col]:
+                # process collision
+                if data.ball.isCollisionWithBlock(data.board[row][col]):
+                    pass
+                    # data.ball.onCollision()
+                    # data.board[row][col].onCollision(data.ball)
+                # remove empty blocks
+                if data.board[row][col].number == 0:
+                    data.board[row][col] = None
 
 
 def redrawAll(canvas, data):
+    # draw start screen
     if not data.startGame:
-        data.ui.drawStart(canvas)
-        return
-    if data.gameOver:
-        data.ui.drawGameOver(canvas)
+        data.ui.drawStart(canvas, data.width, data.height)
         return
     # draw black background
     canvas.create_rectangle(0, 0, data.width, data.height, fill="black")
     # draw margin
-    canvas.create_rectangle(0, 0, data.width, data.margin, fill="gray")
+    drawMargin(canvas, data)
+    # draw blocks
     for row in data.board:
         for block in row:
             if block: block.draw(canvas)
-    for ball in data.balls:
-        ball.draw(canvas)
+    # draw game over screen
+    if data.gameOver:
+        data.ui.drawGameOver(canvas, data.width, data.height)
+        return
+    # draw score
+    canvas.create_text(data.width//2, data.margin//2,
+                       text="Score: %d" % data.score, fill="white")
+    # draw balls
+    data.ball.draw(canvas)
 
+
+def drawMargin(canvas, data):
+    # top
+    canvas.create_rectangle(0, 0, data.width, data.margin,
+                            fill="gray", outline="")
+    # left
+    canvas.create_rectangle(0, 0, data.margin, data.height,
+                            fill="gray", outline="")
+    # bottom
+    canvas.create_rectangle(0, data.height-data.margin, data.width, data.height,
+                            fill="gray", outline="")
+    # right
+    canvas.create_rectangle(data.width-data.margin, 0, data.width, data.height,
+                            fill="gray", outline="")
 
 ####################################
 # run functions
@@ -95,7 +150,7 @@ def run(width=300, height=300):
     data = Struct()
     data.width = width
     data.height = height
-    data.timerDelay = 100 # milliseconds
+    data.timerDelay = 33   # milliseconds (about 30fps)
     root = Tk()
     """
     Change title of Tkinter windows
