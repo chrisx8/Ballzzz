@@ -62,16 +62,47 @@ Ballzzz
     ├── block.py                      (Block objects)
     ├── board.py                      (Board helper functions)
     └── ui.py                         (UI objects for drawing UI)
+├── scoreboard                        (MVC webapp for scoring)
+    ├── api.py                        (Score submission API)
+    ├── common.py                     (Shared helpers in the webapp)
+    ├── config.example.py             (DB config sample)
+    ├── config.py                     (DB config - not commited to git)
+    ├── models.py                     (DB objects)
+    ├── Procfile                      (Heroku deployment file)
+    ├── requirements.txt              (Third-party Python modules and dependencies)
+    ├── runtime.txt                   (Heroku Python runtime)
+    ├── static                        (Static files)
+    │   └── favicon.png
+    ├── templates                     (HTML Templates)
+    │   ├── base.html
+    │   ├── index.html
+    │   └── scoreboard.html
+    ├── views.py                      (Views for frontend)
+    └── wsgi.py                       (Initializes the actual app object)
+
 ```
 ## Algorithmic Plan
 
-- Ball bouncing will be calculated with reflection. As a ball hits a border or a block, its incoming angle is stored
+### Handling Collisions
+
+- The ball reflects when it hits the edges or a block
+- When the user clicks on the screen, the ball's initial angle of movement is calculated.
+  ```
+  Calculation for the angle:
+        distanceToClick / sin(pi/2) = (e.y-ballY) / sin(angle)
+  Simplified to:
+        angle = math.asin(abs(event.y-ballY) / distanceToClick)
+  ```
+- The direction of movement is processed as quadrants
+- When collision happens, quadrant changes. For example, when a ball moving in an angle of pi/4 (Quadrant 1) hits the 
+right border, it'll continue to move in an angle of 3*pi/4 (Quadrant 2)
 
 ## Timeline Plan
 
 - TP1: Implement balls, blocks, the board, collision algorithm, and scoring
 - TP2: Implement reflection algorithm, SuperBall, and special targets
 - TP3: Integrate web service, enhance UI, difficulty settings, customization options
+
 ## Version Control Plan
 
 I'm using Git for version coltrolling for the entire project. All project codes and assets will be available on 

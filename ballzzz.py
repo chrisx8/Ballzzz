@@ -3,6 +3,7 @@ import os
 from tkinter import *
 
 from gameObjects.ball import Ball
+from gameObjects.block import Block
 from gameObjects.board import *
 from gameObjects.ui import UserInterface
 
@@ -27,15 +28,16 @@ def init(data):
 
 def mousePressed(event, data):
     if data.gameOver or not data.startGame: return
-    ballX, ballY = data.ball.cx, data.ball.cy
-    distanceToClick = math.sqrt((ballX-event.x)**2 + (ballY-event.y)**2)
-    # formula = distanceToClick / sin(pi/2) = (e.y-ballY) / sin(angle)
-    sinAngle = abs(event.y-ballY) / distanceToClick
-    angle = math.asin(sinAngle)
-    if event.x >= ballX:
-        data.ball.move(angle, 1)
-    else:
-        data.ball.move(angle, 2)
+    if not data.ball.isMoving():
+        ballX, ballY = data.ball.cx, data.ball.cy
+        distanceToClick = math.sqrt((ballX-event.x)**2 + (ballY-event.y)**2)
+        # angle of ball movement
+        # formula = distanceToClick / sin(pi/2) = (e.y-ballY) / sin(angle)
+        angle = math.asin(abs(event.y-ballY) / distanceToClick)
+        if event.x >= ballX:
+            data.ball.move(angle, 1)
+        else:
+            data.ball.move(angle, 2)
 
 
 def keyPressed(event, data):
@@ -48,6 +50,9 @@ def keyPressed(event, data):
         data.startGame = True
     # ignore rest when game is over or when game isn't started
     if data.gameOver or not data.startGame: return
+    # Speed up ball if user presses A
+    if event.keysym == 'a':
+        data.ball.speed = 20
     # TODO: TESTING CODE BELOW. REMOVE AFTER TESTING
     if event.keysym == 'c':
         for row in data.board:
@@ -63,18 +68,20 @@ def keyPressed(event, data):
 def timerFired(data):
     # update ball movement
     data.ball.updatePos()
-    collisionStatus = data.ball.collisionWithBorder(data.width,
+    removeBall = data.ball.collisionWithBorder(data.width,
                                                     data.height, data.margin)
-    if not collisionStatus:
+    if removeBall:
         data.ball = Ball("hotPink", 66, data.height, data.margin)
     for row in range(len(data.board)):
         for col in range(len(data.board[0])):
-            if data.board[row][col]:
+            # if data.board[row][col]:
+            if isinstance(data.board[row][col], Block):
                 # process collision
                 if data.ball.isCollisionWithBlock(data.board[row][col]):
-                    pass
-                    # data.ball.onCollision()
-                    # data.board[row][col].onCollision(data.ball)
+                    # ball bouncing
+                    data.ball.collisionWithBlock(data.board[row][col])
+                    # block number change
+                    data.board[row][col].onCollision(data.ball)
                 # remove empty blocks
                 if data.board[row][col].number == 0:
                     data.board[row][col] = None
