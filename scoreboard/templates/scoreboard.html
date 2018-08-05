@@ -1,0 +1,28 @@
+  {% extends 'base.html' %}
+
+  {% block title %}Scoreboard{% endblock %}
+  {% block jumbotron %}Scoreboard{% endblock %}
+  {% block status2 %} active {% endblock %}
+
+  {% block content %}
+  <div class="container">
+  <table class="table table-striped">
+  <thead>
+  <tr class="thead-dark">
+  <th scope="col">Rank</th>
+  <th scope="col">Username</th>
+  <th scope="col">Score</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for i in range(count) %}
+  <tr>
+  <td>{{ rankings[i] }}</td>
+  <td>{{ scoreboard[i].username }}</td>
+  <td>{{ scoreboard[i].score }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+  </div>
+  {% endblock %}
