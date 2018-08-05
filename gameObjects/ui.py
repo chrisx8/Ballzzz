@@ -3,5 +3,8 @@ class UserInterface(object):
         self.width = canvasWidth
         self.height = canvasHeight
 
+    def drawStart(self, canvas):
+        print('press S to start')
+
     def drawGameOver(self, canvas):
-        canvas.create_text()
+        print('press R to restart')

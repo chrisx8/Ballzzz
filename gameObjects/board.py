@@ -1,3 +1,7 @@
+import random
+
+from gameObjects.block import generateBlocks
+
 def createBoard(canvasWidth, canvasHeight, margin):
     newBoard = []
     # each cell is 40px*40px
@@ -12,12 +16,16 @@ def createBoard(canvasWidth, canvasHeight, margin):
     return newBoard
 
 
-def moveBoard(board, data):
+def moveBoard(data):
+    newRow = [None] * len(data.board[0])
+    data.board.insert(0, newRow)
+    # generate random blocks
+    countNewBlocks = random.randint(2, len(data.board[0])-1)
+    generateBlocks(countNewBlocks, data)
     # add random blocks on top row
-    board.insert(0, [None] * len(board[0]))
     # remove bottom row
-    board.pop()
+    data.board.pop()
     # game over if current bottom row isn't empty
-    for cell in board[len(board)-1]:
+    for cell in data.board[len(data.board)-1]:
         if cell is not None:
             data.gameOver = True

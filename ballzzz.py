@@ -6,44 +6,63 @@ from gameObjects.board import createBoard, moveBoard
 import random
 import os
 
+
 def init(data):
-    data.margin = 10
+    data.margin = 20
     # dimension of blocks
     data.dimension = 40
+    # UI object
+    data.ui = UserInterface(data.width, data.height)
+    # number of available balls
+    data.countBalls = 1
     data.balls = [Ball("green2", 42, data.height, data.margin)]
     data.board = createBoard(data.width, data.height, data.margin)
     data.startGame = False
     data.gameOver = False
+    data.score = 0
     # generate between 2 and 4 blocks on the top row initially
     countInitialBlocks = random.randint(2, 4)
-    generateBlocks(countInitialBlocks, data.width, data.margin,
-                   data.dimension, data.board)
+    generateBlocks(countInitialBlocks, data)
 
 
 def mousePressed(event, data):
+    if data.gameOver or not data.startGame: return
     for row in data.board:
         for block in row:
             if block: block.moveDown()
-    moveBoard(data.board, data)
+    moveBoard(data)
     print(len(data.board))
 
+
 def keyPressed(event, data):
-    if data.gameOver: return
+    if not data.startGame and event.keysym == 's':
+        data.startGame = True
+        return
     if event.keysym == 'r':
         init(data)
 
+
 def timerFired(data):
-    print(data.gameOver)
+    pass
+
 
 def redrawAll(canvas, data):
-    # if not startGame:
+    if not data.startGame:
+        data.ui.drawStart(canvas)
+        return
+    if data.gameOver:
+        data.ui.drawGameOver(canvas)
+        return
     # draw black background
     canvas.create_rectangle(0, 0, data.width, data.height, fill="black")
+    # draw margin
+    canvas.create_rectangle(0, 0, data.width, data.margin, fill="gray")
     for row in data.board:
         for block in row:
             if block: block.draw(canvas)
     for ball in data.balls:
         ball.draw(canvas)
+
 
 ####################################
 # run functions
@@ -70,6 +89,7 @@ def run(width=300, height=300):
         redrawAllWrapper(canvas, data)
         # pause, then call timerFired again
         canvas.after(data.timerDelay, timerFiredWrapper, canvas, data)
+
     # Set up data and call init
     class Struct(object): pass
     data = Struct()
@@ -107,5 +127,6 @@ def run(width=300, height=300):
     # and launch the app
     root.mainloop()  # blocks until window is closed
     print("bye!")
+
 
 run(400, 600)
