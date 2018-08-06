@@ -6,7 +6,7 @@ import config
 
 Base = declarative_base()
 
-
+# Define DB object
 class Scoreboard(Base):
     __tablename__ = 'score'
     id = Column(Integer, primary_key=True)

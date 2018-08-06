@@ -4,47 +4,69 @@ from models import Scoreboard
 from views import DBSession, get_rankings
 from sqlalchemy.orm.exc import NoResultFound
 
+# Username legality check: 4-50 alphanumeric characters
 USERNAME_REGEX = re.compile('^[a-zA-Z0-9._-]{4,50}$')
 
+# accept and parse POST
 score_parser = reqparse.RequestParser()
 score_parser.add_argument('username',
                           help='Your username should contain with 4-50 '
                           'characters, with only letters and numbers.',
                           required=True)
-score_parser.add_argument('score', help='This field is required', required=True)
+score_parser.add_argument('score', 
+                          help='This field is required', required=True)
 
-
+# Score API
 class PublishScore(Resource):
+    # GET: get the top 5
+    def get(self):
+        top_five = dict()
+        # find all users, sorted by score
+        board = DBSession.query(Scoreboard).order_by("score desc").all()
+        # find top five users if there's more than 5 users
+        if len(board) > 5:
+            for i in range(5):
+                # result payload contains username, score, ranking (handles ties)
+                top_five[i] = self.build_user_data_json(board, i)
+        # otherwise find all users
+        else:
+            for i in range(len(board)):
+                # result payload contains username, score, ranking (handles ties)
+                top_five[i] = self.build_user_data_json(board, i)
+        # close DB session
+        DBSession.close()
+        return top_five, 200
+
+    # POST: submit score
     def post(self):
         data = score_parser.parse_args()
-        update_score = False
-        new_user = False
+        # Find if user already exists
         try:
-            find_user = DBSession.query(Scoreboard).\
+            user_data = DBSession.query(Scoreboard).\
                 filter_by(username=data['username']).one()
-            if find_user.score < int(data['score']):
-                update_score = True
+            # If the user's score in database is lower, update score
+            if user_data.score < int(data['score']):
+                user_data.score = data.score
+        # If user doesn't exist, create user and save score
         except NoResultFound:
-            new_user = True
-        if new_user:
-            new_score = Scoreboard(username=data['username'],
+            user_data = Scoreboard(username=data['username'],
                                    score=int(data['score']))
-            DBSession.add(new_score)
-        elif update_score:
-            new_score = DBSession.query(Scoreboard).\
-                filter_by(username=data['username']).one()
-            new_score.score = data.score
-        else:
-            new_score = DBSession.query(Scoreboard).\
-                filter_by(username=data['username']).one()
+            DBSession.add(user_data)
+        # Commit change to DB
         DBSession.commit()
+        # Find current ranking
         board = DBSession.query(Scoreboard).order_by("score desc").all()
-        for i in range(len(board)):
-            if board[i] == new_score:
-                index = i
-                break
-        return {
-            'username': new_score.username,
-            'score': new_score.score,
-            'ranking': get_rankings(board)[index]
-        }, 201
+        # find index of user
+        index = board.index(user_data)
+        # for i in range(len(board)):
+            # if board[i] == user_data:
+            #     index = i
+            #     break
+        # close DB session
+        DBSession.close()
+        return self.build_user_data_json(board, index), 201
+    
+    def build_user_data_json(self, board, i):
+        return {'username': board[i].username, 
+                'score': board[i].score, 
+                'ranking': get_rankings(board)[i]}

@@ -4,12 +4,12 @@ from flask import render_template, Blueprint, flash, redirect
 
 views = Blueprint('views', __name__, template_folder='templates')
 
-
+# Homepage
 @views.route('/')
 def home():
     return render_template('index.html')
 
-
+# Scoreboard page
 @views.route('/scoreboard/')
 def scoreboard():
     board = DBSession.query(Scoreboard).order_by("score desc").all()
