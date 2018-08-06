@@ -28,7 +28,3 @@ def moveBoard(data):
     data.board.pop()
     # score+1 on each move
     data.score += 1
-    # game over if current bottom row isn't empty
-    for cell in data.board[len(data.board)-1]:
-        if cell is not None:
-            data.gameOver = True

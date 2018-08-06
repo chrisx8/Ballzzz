@@ -14,7 +14,7 @@ class Ball(object):
         self.dx = 0
         self.dy = 0
         self.quadrant = 0
-        self.speed = 5
+        self.speed = 3
 
     def draw(self, canvas):
         canvas.create_oval(self.cx-self.radius, self.cy-self.radius,
@@ -61,9 +61,9 @@ class Ball(object):
             # go to quadrant 3 when going up
             elif self.dy > 0:
                 self.move(self.angle, 3)
-        # bottom border: return True to remove ball
+        # bottom border: return last pos to remove ball
         elif self.cy+self.radius >= canvasHeight-canvasMargin:
-            return True
+            return self.cx
 
     def isCollisionWithBlock(self, block):
         return self.cx + self.radius >= block.topLeft[0] and \

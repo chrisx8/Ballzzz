@@ -37,6 +37,11 @@ class Block(object):
 
 
 def generateBlocks(countBlocks, data):
+    generateTarget = random.choice([True, False])
+    if generateTarget:
+        cols = (data.width-data.margin)//data.dimension-1
+        randomCol = random.randint(0, cols)
+        data.board[0][randomCol] = Target(data.margin, 0, randomCol)
     while countBlocks > 0:
         cols = (data.width-data.margin)//data.dimension-1
         randomCol = random.randint(0, cols)
@@ -44,3 +49,28 @@ def generateBlocks(countBlocks, data):
             data.board[0][randomCol] = Block(0, randomCol,
                                              data.margin, data.countBalls)
             countBlocks -= 1
+
+
+class Target(object):
+    def __init__(self, margin, row, col):
+        self.color = "dodger blue"
+        self.dimension = 40
+        self.r = 10
+        self.margin = margin
+        self.row = row
+        self.col = col
+        self.updatePos()
+
+    def updatePos(self):
+        self.cx = self.margin + self.col*self.dimension + self.dimension//2
+        self.cy = self.margin + self.row*self.dimension + self.dimension//2
+
+    def draw(self, canvas):
+        canvas.create_oval(self.cx-self.r, self.cy-self.r,
+                           self.cx+self.r, self.cy+self.r,
+                           outline=self.color, width=2)
+        canvas.create_text(self.cx, self.cy, text="+1", fill="white")
+
+    def moveDown(self):
+        self.row += 1
+        self.updatePos()

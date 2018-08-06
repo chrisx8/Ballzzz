@@ -2,6 +2,7 @@ import math
 import os
 from tkinter import *
 
+from gameObjects.api import API
 from gameObjects.ball import Ball
 from gameObjects.block import Block
 from gameObjects.board import *
@@ -21,6 +22,9 @@ def init(data):
     data.startGame = False
     data.gameOver = False
     data.score = 1
+    # Define api connection
+    data.api = API('johnson')
+    data.rank = None
     # generate between 2 and 4 blocks on the top row initially
     countInitialBlocks = random.randint(2, 4)
     generateBlocks(countInitialBlocks, data)
@@ -58,23 +62,33 @@ def keyPressed(event, data):
         for row in data.board:
             for block in row:
                 if block: block.onCollision(data.ball)
-    if event.keysym == 'm':
-        for row in data.board:
-            for block in row:
-                if block: block.moveDown()
-        moveBoard(data)
 
 
 def timerFired(data):
+    # game over if current bottom row isn't empty
+    for cell in data.board[len(data.board)-1]:
+        if isinstance(cell, Block):
+            data.gameOver = True
+            apiResp = data.api.uploadScore(data.score)
+            data.rank = apiResp['ranking']
     # update ball movement
     data.ball.updatePos()
-    removeBall = data.ball.collisionWithBorder(data.width,
-                                                    data.height, data.margin)
-    if removeBall:
-        data.ball = Ball("hotPink", 66, data.height, data.margin)
+    # Handling ball hitting bottom border
+    # where ball landed on the bottom border
+    lastXPos = data.ball.collisionWithBorder(data.width,
+                                             data.height, data.margin)
+    if lastXPos is not None:
+        for row in data.board:
+            for block in row:
+                # shift down every block
+                if block: block.moveDown()
+        # Create new row on top of board
+        moveBoard(data)
+        # create a new ball
+        data.ball = Ball("hotPink", lastXPos, data.height, data.margin)
+    # handling collsions
     for row in range(len(data.board)):
         for col in range(len(data.board[0])):
-            # if data.board[row][col]:
             if isinstance(data.board[row][col], Block):
                 # process collision
                 if data.ball.isCollisionWithBlock(data.board[row][col]):
@@ -102,7 +116,8 @@ def redrawAll(canvas, data):
             if block: block.draw(canvas)
     # draw game over screen
     if data.gameOver:
-        data.ui.drawGameOver(canvas, data.width, data.height)
+        data.ui.drawGameOver(canvas, data.width, data.height,
+                             data.score, data.rank)
         return
     # draw score
     canvas.create_text(data.width//2, data.margin//2,
@@ -156,7 +171,7 @@ def run(width=300, height=300):
     data = Struct()
     data.width = width
     data.height = height
-    data.timerDelay = 33   # milliseconds (about 30fps)
+    data.timerDelay = 1000 // 60   # milliseconds (about 30fps)
     root = Tk()
     """
     Change title of Tkinter windows
