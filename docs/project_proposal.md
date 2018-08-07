@@ -15,7 +15,7 @@ Ballzzz is an enhanced version of Ballz (a popular game by Ketchapp), with diffe
 - [x] Players shoot balls towards the blocks. The number associated with the block decreases by 1 on each hit.
 - [x] When the number of a block reaches 0, it's removed from the screen.
 - [x] The ball reflects on the edges of the board and blocks (if number is greater than 1).
-- [ ] Players get additional balls by hitting special targets.
+- [x] Players get additional balls by hitting special targets.
 - [ ] On each shot, all balls are released.
 - [x] When a shot is complete, new blocks are randomly generated on the top row.
 - [x] When a block reaches the bottom of the screen, the game overs.

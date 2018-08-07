@@ -4,7 +4,7 @@ from tkinter import *
 
 from gameObjects.api import API
 from gameObjects.ball import Ball
-from gameObjects.block import Block
+from gameObjects.block import Block, Target
 from gameObjects.board import *
 from gameObjects.ui import UserInterface
 
@@ -16,15 +16,24 @@ def init(data):
     # UI object
     data.ui = UserInterface(data.width, data.height)
     # number of available balls
-    data.countBalls = 1
+    data.ballCount = 1
+    # Ball object that stays on the bottom.
     data.ball = Ball("green2", 66, data.height, data.margin)
+    # Moving balls
+    data.movingBalls = []
+    # number of bounces in each shot
+    data.bounces = 0
+    # Where to display ball count depends on ball pos
+    data.ballCountPos = (data.ball.cx, data.ball.cy-data.ball.radius-10)
+    # Create a board
     data.board = createBoard(data.width, data.height, data.margin)
+    # Scoring and game state
     data.startGame = False
     data.gameOver = False
     data.score = 1
+    data.rank = None
     # Define api connection
     data.api = API('johnson')
-    data.rank = None
     # generate between 2 and 4 blocks on the top row initially
     countInitialBlocks = random.randint(2, 4)
     generateBlocks(countInitialBlocks, data)
@@ -71,10 +80,13 @@ def timerFired(data):
             data.gameOver = True
             apiResp = data.api.uploadScore(data.score)
             data.rank = apiResp['ranking']
+            return
+    # ignore rest when game is over
     # update ball movement
     data.ball.updatePos()
     # Handling ball hitting bottom border
     # where ball landed on the bottom border
+    # print(data.bounces)
     lastXPos = data.ball.collisionWithBorder(data.width,
                                              data.height, data.margin)
     if lastXPos is not None:
@@ -86,12 +98,21 @@ def timerFired(data):
         moveBoard(data)
         # create a new ball
         data.ball = Ball("hotPink", lastXPos, data.height, data.margin)
-    # handling collsions
+        data.ballCountPos = (data.ball.cx, data.ball.cy-data.ball.radius-10)
+        # reset bounces
+        data.bounces = 0
+    # handling collisions
     for row in range(len(data.board)):
         for col in range(len(data.board[0])):
-            if isinstance(data.board[row][col], Block):
-                # process collision
+            if isinstance(data.board[row][col], Target):
+                # process collision with target
                 if data.ball.isCollisionWithBlock(data.board[row][col]):
+                    data.ballCount += 1
+                    data.board[row][col] = None
+            if isinstance(data.board[row][col], Block):
+                # process collision with block
+                if data.ball.isCollisionWithBlock(data.board[row][col]):
+                    data.bounces += 1
                     # ball bouncing
                     data.ball.collisionWithBlock(data.board[row][col])
                     # block number change
@@ -116,9 +137,11 @@ def redrawAll(canvas, data):
             if block: block.draw(canvas)
     # draw game over screen
     if data.gameOver:
-        data.ui.drawGameOver(canvas, data.width, data.height,
-                             data.score, data.rank)
+        data.ui.drawGameOver(canvas, data)
         return
+    if data.ballCount != 0:
+        canvas.create_text(data.ballCountPos,
+                           text="x%d" % data.ballCount, fill="white")
     # draw score
     canvas.create_text(data.width//2, data.margin//2,
                        text="Score: %d" % data.score, fill="white")
@@ -171,7 +194,7 @@ def run(width=300, height=300):
     data = Struct()
     data.width = width
     data.height = height
-    data.timerDelay = 1000 // 60   # milliseconds (about 30fps)
+    data.timerDelay = 1000 // 30   # milliseconds (about 30fps)
     root = Tk()
     """
     Change title of Tkinter windows

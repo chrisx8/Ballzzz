@@ -14,7 +14,7 @@ class Ball(object):
         self.dx = 0
         self.dy = 0
         self.quadrant = 0
-        self.speed = 3
+        self.speed = 5
 
     def draw(self, canvas):
         canvas.create_oval(self.cx-self.radius, self.cy-self.radius,
@@ -43,22 +43,22 @@ class Ball(object):
 
     def collisionWithBorder(self, canvasWidth, canvasHeight, canvasMargin):
         # top border: reverse vertical direction
-        if self.cy-self.radius <= canvasMargin:
+        if self.cy-self.radius <= canvasMargin+10:
             self.dy *= -1
         # left border: change quadrant
         if self.cx-self.radius <= canvasMargin:
             # go to quadrant 1 when going up
             if self.dy < 0:
                 self.move(self.angle, 1)
-            # go to quadrant 4 when going up
+            # go to quadrant 4 when going down
             elif self.dy > 0:
                 self.move(self.angle, 4)
         # right border: change quadrant
-        elif self.cx+self.radius >= canvasWidth-2*canvasMargin:
+        elif self.cx+self.radius >= canvasWidth-canvasMargin:
             # go to quadrant 2 when going up
             if self.dy < 0:
                 self.move(self.angle, 2)
-            # go to quadrant 3 when going up
+            # go to quadrant 3 when going down
             elif self.dy > 0:
                 self.move(self.angle, 3)
         # bottom border: return last pos to remove ball
@@ -72,26 +72,29 @@ class Ball(object):
                self.cy - self.radius <= block.bottomRight[1]
 
     def collisionWithBlock(self, block):
-        # top/bottom border: reverse vertical direction
-        if self.cy-self.radius <= block.bottomRight[1] or \
-           self.cy + self.radius >= block.topLeft[1]:
-            self.dy *= -1
         # left border: change quadrant
-        if self.cx+self.radius >= block.topLeft[0]:
+        if block.topLeft[0] <= self.cx+self.radius < block.bottomRight[0] and \
+                self.cx < block.topLeft[0]:
             # go to quadrant 1 when going up
             if self.dy < 0:
-                self.move(self.angle, 1)
-            # go to quadrant 4 when going up
-            elif self.dy > 0:
-                self.move(self.angle, 4)
-        # right border: change quadrant
-        elif self.cx-self.radius <= block.bottomRight[0]:
-            # go to quadrant 2 when going up
-            if self.dy < 0:
                 self.move(self.angle, 2)
-            # go to quadrant 3 when going up
+            # go to quadrant 4 when going down
             elif self.dy > 0:
                 self.move(self.angle, 3)
+        # right border: change quadrant
+        elif self.cx-self.radius <= block.bottomRight[0] and \
+                self.cx > block.bottomRight[0]:
+            # go to quadrant 2 when going up
+            if self.dy < 0:
+                self.move(self.angle, 1)
+            # go to quadrant 3 when going down
+            elif self.dy > 0:
+                self.move(self.angle, 4)
+        # top/bottom border: reverse vertical direction
+        elif (self.cy - self.radius < block.bottomRight[1] or
+                self.cy + self.radius > block.topLeft[1]) and \
+                block.topLeft[0] < self.cx < block.bottomRight[0]:
+            self.dy *= -1
 
     def onCollision(self):
         if self.quadrant == 1:
