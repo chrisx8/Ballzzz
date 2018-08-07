@@ -13,7 +13,7 @@ A CMU 15-112 Term Project.
   - `ballzzz.py`
   - `ballzzz_icon.ico`
   - `requirements.txt`
-- Download everything in `gameObjects`
+- Download everything in `gameObjects/` and everything in `assets/`
 - Install `requests` and its dependencies using `pip`:
 
   ```bash
@@ -27,7 +27,7 @@ A CMU 15-112 Term Project.
 ### Changes since TP1
 
 - Scores are automatically uploaded to the scoreboard server.
-- Game Over UI changes to show ranking.
+- Game Over UI changes to show ranking and restart and exit button.
 - Added special targets. When the ball hits a target, player gets an extra ball.
 - Fixed a block collision bug. Insufficient collision checking in the `Ball` class was causing every collisions to be detected as top/bottom collision.
 - Prevent infinite bouncing from happening.

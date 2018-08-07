@@ -11,12 +11,15 @@ from gameObjects.ui import UserInterface
 
 
 def init(data):
+    # current asset path
+    data.assetPath = os.path.dirname(os.path.abspath(__file__)) + \
+                     os.sep + 'assets' + os.sep
     data.timerDelay = 30
     data.margin = 20
     # dimension of blocks
     data.dimension = 40
     # UI object
-    data.ui = UserInterface(data.width, data.height)
+    data.ui = UserInterface()
     # Ball object that stays on the bottom.
     randomBallPos = random.randint(data.margin+10, data.width-data.margin-10)
     data.ball = Ball("green2", randomBallPos, data.height, data.margin)
@@ -31,9 +34,9 @@ def init(data):
     # Create a board
     data.board = createBoard(data.width, data.height, data.margin)
     # Scoring and game state
-    data.startGame = False
-    data.gameOver = False
+    data.startGame, data.gameOver = False, False
     data.score = 1
+    data.bestScore = None
     data.rank = None
     # current shot timer
     data.timer = 0
@@ -46,8 +49,13 @@ def init(data):
 
 def mousePressed(event, data):
     # TODO: MOUSE-NAVIGABLE UI
+    # mouse navigation on game over screen, and ignore rest
+    if data.gameOver and data.width//2-60 <= event.x <= data.width//2+60:
+        init(data)
+        data.startGame = True
+        return
     # ignore rest when game isn't started or there are moving balls
-    if data.gameOver or not data.startGame or data.movingBalls != []: return
+    if not data.startGame or data.movingBalls != []: return
     # copy initial ball and add to moving ball list
     # copyBall = Ball(data.ball.color, data.ball.cx, data.height, data.margin)
     while data.remainingBalls > 0:
@@ -66,10 +74,18 @@ def mousePressed(event, data):
 
 
 def keyPressed(event, data):
+    # TODO: REMOVE TESING CODE
+    if event.keysym == 'g':
+        data.gameOver = True
+        apiResp = data.api.uploadScore(data.score)
+        data.rank = apiResp['ranking']
+        data.bestScore = apiResp['score']
+    if event.keysym == 'h':
+        data.score += 10
     # press R to restart at any time after game started
-    if data.startGame and event.keysym == 'r':
-        init(data)
-        data.startGame = True
+    # if data.startGame and event.keysym == 'r':
+    #     init(data)
+    #     data.startGame = True
     # start game
     if not data.startGame and event.keysym == 's':
         data.startGame = True
@@ -92,6 +108,7 @@ def timerFired(data):
             data.gameOver = True
             apiResp = data.api.uploadScore(data.score)
             data.rank = apiResp['ranking']
+            data.bestScore = apiResp['score']
     # update ball movement
     for ball in data.movingBalls:
         if isinstance(ball, Ball):
@@ -105,7 +122,11 @@ def timerFired(data):
 def redrawAll(canvas, data):
     # draw start screen
     if not data.startGame:
-        data.ui.drawStart(canvas, data.width, data.height)
+        data.ui.drawStart(canvas, data)
+        return
+    # draw game over screen
+    if data.gameOver:
+        data.ui.drawGameOver(canvas, data)
         return
     # draw black background
     canvas.create_rectangle(0, 0, data.width, data.height, fill="black")
@@ -115,17 +136,13 @@ def redrawAll(canvas, data):
     for row in data.board:
         for block in row:
             if block: block.draw(canvas)
-    # draw game over screen
-    if data.gameOver:
-        data.ui.drawGameOver(canvas, data)
-        return
-    if data.remainingBalls != 0:
+    if data.remainingBalls > 0:
         canvas.create_text(data.ballCountPos,
                            text="x%d" % data.remainingBalls, fill="white")
     # draw score
     canvas.create_text(data.width//2, data.margin//2,
                        text="Score: %d" % data.score, fill="white")
-    # draw intial ball
+    # draw initial ball
     data.ball.draw(canvas)
     # draw moving balls
     for ball in data.movingBalls:
@@ -234,6 +251,7 @@ def run(width=300, height=300):
     data.height = height
     data.timerDelay = 30   # milliseconds (about 30fps)
     root = Tk()
+    init(data)
     """
     Change title of Tkinter windows
     cited from https://stackoverflow.com/questions/2395431/
@@ -247,10 +265,7 @@ def run(width=300, height=300):
     cited from https://stackoverflow.com/questions/3430372/
                 how-to-get-full-path-of-current-files-directory-in-python
     """
-    # Get absolute directory of icon
-    root.iconbitmap(os.path.dirname(os.path.abspath(__file__))
-                    + os.sep + 'ballzzz_icon.ico')
-    init(data)
+    root.iconbitmap(data.assetPath + 'ballzzz_icon.ico')
     # create the root and the canvas
     canvas = Canvas(root, width=data.width, height=data.height)
     canvas.configure(bd=0, highlightthickness=0)

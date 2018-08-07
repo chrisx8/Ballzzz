@@ -16,10 +16,12 @@ class API(object):
             return {'message': 'Cannot connect to server'}
         # API response is successful
         if postResponse.status_code == 201:
-            # get and store ranking
+            # get ranking and best score
             ranking = postResponse.json()['ranking']
+            score = postResponse.json()['score']
             # return success message and raking
-            return {'message': 'Score uploaded', 'ranking': ranking}
+            return {'message': 'Score uploaded',
+                    'ranking': ranking, 'score': score}
         else:
             # return error message from server
             return {'message': postResponse.json()['message']}
