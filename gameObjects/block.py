@@ -40,7 +40,6 @@ def generateBlocks(countBlocks, data):
     # increase difficulty every 50 points earned
     if data.score % 50 == 0:
         data.difficulty += 1
-    print(data.difficulty)
     generateTarget = random.choice([True, False])
     if generateTarget:
         cols = (data.width-data.margin)//data.dimension-1

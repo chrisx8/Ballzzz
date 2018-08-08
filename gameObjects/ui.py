@@ -24,9 +24,6 @@ class UserInterface(object):
         # draw score
         canvas.create_text(data.width//2, data.margin//2,
                            text="Score: %d" % data.score, fill="white")
-        # draw difficulty
-        canvas.create_text(data.width//2, data.height-data.margin*2,
-                           text="Difficulty: %d" % data.difficulty, fill="gray")
         # draw resume instruction when paused and ignore rest
         if data.paused:
             canvas.create_text(data.width // 2, data.height - data.margin // 2,
@@ -41,10 +38,20 @@ class UserInterface(object):
             else:
                 canvas.create_text(data.width//2, data.height-data.margin//2,
                                    text="Press A to speed up", fill="white")
-        # draw restart instruction
+        # draw current difficulty, restart and difficulty change instruction
         else:
-            canvas.create_text(data.width//2, data.height-data.margin//2,
-                               text="Press R to restart game", fill="white")
+            if data.bottomScrollX <= -1.5*data.width:
+                data.bottomScrollX = data.width
+            else:
+                data.bottomScrollX -= 3
+            print(data.bottomScrollX)
+            canvas.create_text(data.bottomScrollX, data.height-data.margin//2,
+                               text="Current Difficulty: %d                 "
+                                    % data.difficulty +
+                                    "Press D to increase difficulty          "
+                                    "Press P to pause game          "
+                                    "Press R to restart game", fill="white",
+                               anchor="w")
 
     def drawStart(self, canvas, data):
         canvas.create_rectangle(0, 0, data.width, data.height, fill="gray18")

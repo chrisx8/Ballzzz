@@ -54,6 +54,8 @@ def init(data):
     # generate between 2 and 4 blocks on the top row initially
     countInitialBlocks = random.randint(2, 4)
     generateBlocks(countInitialBlocks, data)
+    # X pos for bottom margin scroll text
+    data.bottomScrollX = data.width
 
 
 def mousePressed(event, data):
