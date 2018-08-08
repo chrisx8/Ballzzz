@@ -4,11 +4,16 @@ import os
 from tkinter import *
 
 from gameObjects.api import API
-from gameObjects.ball import Ball
+from gameObjects.ball import Ball, SuperBall
 from gameObjects.block import Block, Target
 from gameObjects.board import *
 from gameObjects.ui import UserInterface
 
+
+########################################################################
+# animation template adopted from course note
+# https://www.cs.cmu.edu/~112n18/notes/notes-animations-part1.html
+########################################################################
 
 def init(data):
     # current asset path
@@ -28,7 +33,7 @@ def init(data):
     # Moving balls
     data.movingBalls = []
     # number of bounces in each shot and average hit per ball
-    data.bounces, data.averageHitsPerBall = 0, 0
+    data.bounces = 0
     # Where to display ball count depends on ball pos
     data.ballCountPos = (data.ball.cx, data.ball.cy-data.ball.radius-10)
     # Create a board
@@ -71,9 +76,12 @@ def mousePressed(event, data):
     # ignore rest when game isn't started or there are moving balls
     if not data.startGame or data.movingBalls != [] or data.paused: return
     # copy initial ball and add to moving ball list
-    # copyBall = Ball(data.ball.color, data.ball.cx, data.height, data.margin)
-    while data.remainingBalls > 0:
+    while data.remainingBalls > 0 and not isinstance(data.ball, SuperBall):
         data.movingBalls.append(copy.copy(data.ball))
+        data.remainingBalls -= 1
+    # one super ball
+    if isinstance(data.ball, SuperBall):
+        data.movingBalls.append(data.ball)
         data.remainingBalls -= 1
     for ball in data.movingBalls:
         ballX, ballY = ball.cx, ball.cy
@@ -121,7 +129,6 @@ def timerFired(data):
     if data.gameOver or not data.startGame or data.paused: return
     # increment timer of current shot if balls are moving
     if len(data.movingBalls) != 0: data.timer += data.timerDelay
-    print(data.timer)
     # game over if current bottom row isn't empty
     for cell in data.board[len(data.board)-1]:
         if isinstance(cell, Block):
@@ -161,7 +168,7 @@ def redrawAll(canvas, data):
         for block in row:
             if block: block.draw(canvas)
     # draw ball counter
-    if data.remainingBalls > 0:
+    if data.remainingBalls > 0 and not isinstance(data.ball, SuperBall):
         canvas.create_text(data.ballCountPos,
                            text="x%d" % data.remainingBalls, fill="white")
     # draw initial ball
@@ -192,7 +199,7 @@ def processBorderCollision(data, ball):
         # Create new row on top of board
         moveBoard(data)
         # create a new ball
-        data.ball = Ball(data.ball.color, lastXPos, data.height, data.margin)
+        createNewBall(data, lastXPos)
         data.movingBalls = []
         data.remainingBalls = data.ballCount
         data.ballCountPos = (data.ball.cx, data.ball.cy-data.ball.radius-10)
@@ -225,8 +232,17 @@ def processBoardObjectCollision(data, ball):
                     data.board[row][col] = None
 
 
+def createNewBall(data, lastXPos):
+    averageHitsPerBall = data.bounces // data.ballCount
+    if averageHitsPerBall > 1 and not isinstance(data.ball, SuperBall):
+        data.ball = SuperBall(data.ball.color, lastXPos,
+                              data.height, data.margin)
+    else:
+        data.ball = Ball(data.ball.color, lastXPos, data.height, data.margin)
+
+
 ########################################################################
-# run functions
+# run functions from course notes
 # https://www.cs.cmu.edu/~112n18/notes/notes-animations-part1.html
 ########################################################################
 

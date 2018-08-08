@@ -33,4 +33,4 @@ A CMU 15-112 Term Project.
 - Prevent infinite bouncing from happening.
 - Randomize initial position of the ball.
 - When player has more than one balls, all balls are released at the same time and collisions are handled independently.
-- Implemented SuperBall
+- Implemented SuperBall (twice as big as a regular ball and has an S inside)

@@ -36,11 +36,11 @@ When the game ends, scores are automatically sent to a server. Player can see th
 - [x] [EASY] After the game is over, scores are sent to a server, and rankings are displayed on the game-over screen.
 - [x] [EASY] Players can see the top scores on a webpage hosted on the same server.
 - [ ] [EASY] Players can see the top 5 scores in the game.
+- [x] [EASY] A "Super Ball" ([definition](#super-ball)) is awarded when one of these conditions are met:
 - [ ] [MEDIUM] Generate board based on a shape that the player draws
 - [ ] [MEDIUM] Store game state
 - [ ] [MEDIUM] Difficulty selection
 - [ ] [MEDIUM] Increased difficulty when score exceeds 50
-- [ ] [MEDIUM] A "Super Ball" ([definition](#super-ball)) is awarded when one of these conditions are met:
   - [ ] Every 10 shots (only in Easy mode)
   - [ ] Average hits per ball ([definition](#average-hits-per-ball)) of a shot is greater than 10
 - [ ] [HARD] Multiplayer mode. Two players shoot from opposite sides of the board.
