@@ -2,19 +2,23 @@
 
 A CMU 15-112 Term Project.
 
+The entire project is available on [GitHub](https://github.com/chrisx8/Ballzzz/).
+
 ## Design Proposal
 
-- [Project Proposal](docs/project_proposal.md)
-- [Storyboard](docs/storyboard.png)
+- [Project Proposal](docs/project_proposal.md) (`docs/project_proposal.md`)
+- [Storyboard](docs/storyboard.png) (`docs/scoreboard.png`)
 
 ## Run the game
+
+**All files listed in this section are REQUIRED to run the game.**
 
 - Download these files from the root directory
   - `ballzzz.py`
   - `ballzzz_icon.ico`
   - `requirements.txt`
 - Download everything in `gameObjects/` and everything in `assets/`
-- Install `requests` and its dependencies using `pip`:
+- Install `requests` using `pip`:
 
   ```bash
   pip install -r requirements.txt
@@ -34,3 +38,4 @@ A CMU 15-112 Term Project.
 - Randomize initial position of the ball.
 - When player has more than one balls, all balls are released at the same time and collisions are handled independently.
 - Implemented SuperBall (twice as big as a regular ball and has an S inside)
+- Difficulty changes when score is over 50, and allow user to change in-game by pressing D.

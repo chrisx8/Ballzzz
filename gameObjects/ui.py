@@ -24,6 +24,9 @@ class UserInterface(object):
         # draw score
         canvas.create_text(data.width//2, data.margin//2,
                            text="Score: %d" % data.score, fill="white")
+        # draw difficulty
+        canvas.create_text(data.width//2, data.height-data.margin*2,
+                           text="Difficulty: %d" % data.difficulty, fill="gray")
         # draw resume instruction when paused and ignore rest
         if data.paused:
             canvas.create_text(data.width // 2, data.height - data.margin // 2,

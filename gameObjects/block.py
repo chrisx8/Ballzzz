@@ -4,7 +4,7 @@ from gameObjects.ball import SuperBall
 
 
 class Block(object):
-    def __init__(self, row, col, margin, countBalls):
+    def __init__(self, row, col, margin, countBalls, difficulty):
         colors = ('green2', 'hotPink', 'dodgerblue')
         self.dimension = 40
         self.margin = margin
@@ -12,7 +12,7 @@ class Block(object):
         self.col = col
         self.updatePos()
         self.color = random.choice(colors)
-        self.number = random.randint(countBalls, countBalls*3)
+        self.number = random.randint(countBalls, countBalls*3*difficulty)
 
     def updatePos(self):
         self.topLeft = (self.margin+self.col*self.dimension,
@@ -37,6 +37,10 @@ class Block(object):
 
 
 def generateBlocks(countBlocks, data):
+    # increase difficulty every 50 points earned
+    if data.score % 50 == 0:
+        data.difficulty += 1
+    print(data.difficulty)
     generateTarget = random.choice([True, False])
     if generateTarget:
         cols = (data.width-data.margin)//data.dimension-1
@@ -46,8 +50,8 @@ def generateBlocks(countBlocks, data):
         cols = (data.width-data.margin)//data.dimension-1
         randomCol = random.randint(0, cols)
         if not data.board[0][randomCol]:
-            data.board[0][randomCol] = Block(0, randomCol,
-                                             data.margin, data.ballCount)
+            data.board[0][randomCol] = Block(0, randomCol, data.margin,
+                                             data.ballCount, data.difficulty)
             countBlocks -= 1
 
 

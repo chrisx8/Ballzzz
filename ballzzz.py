@@ -42,6 +42,8 @@ def init(data):
     data.startGame, data.gameOver = False, False
     data.paused = False
     data.drawLeaderboard = False
+    # difficulty 1-9. 1=easy
+    data.difficulty = 1
     data.score = 1
     data.bestScore = None
     data.rank = None
@@ -104,24 +106,27 @@ def keyPressed(event, data):
     #     data.rank = apiResp['ranking']
     #     data.bestScore = apiResp['score']
     # if event.keysym == 'h':
-    #     data.score += 10
+    #     data.score = 50
     # END TESTING CODE
     # when paused, press any key to resume game and ignore rest
     if data.paused:
         data.paused = False
         return
-    # press R to restart during game play
-    if data.startGame and not data.gameOver:
-        if event.keysym == 'p':
+    # only check when playing
+    if data.startGame and not data.gameOver and not data.paused:
+        # Speed up ball if user presses A
+        if data.timer >= 10000 and event.keysym == 'a':
+            data.timerDelay = 5
+        # press P to pause during game play
+        elif event.keysym == 'p':
             data.paused = True
+        # press R to restart during game play
         elif event.keysym == 'r':
             init(data)
             data.startGame = True
-    # ignore rest when game is over or when game isn't started
-    if data.gameOver or not data.startGame: return
-    # Speed up ball if user presses A
-    if data.timer >= 10000 and event.keysym == 'a':
-        data.timerDelay = 5
+        # press D to increase difficulty (up to 9)
+        elif event.keysym == 'd' and data.difficulty < 9:
+            data.difficulty += 1
 
 
 def timerFired(data):
@@ -234,11 +239,11 @@ def processBoardObjectCollision(data, ball):
 
 def createNewBall(data, lastXPos):
     averageHitsPerBall = data.bounces // data.ballCount
-    if averageHitsPerBall > 1 and not isinstance(data.ball, SuperBall):
-        data.ball = SuperBall(data.ball.color, lastXPos,
+    if averageHitsPerBall > 10 and not isinstance(data.ball, SuperBall):
+        data.ball = SuperBall("hotPink", lastXPos,
                               data.height, data.margin)
     else:
-        data.ball = Ball(data.ball.color, lastXPos, data.height, data.margin)
+        data.ball = Ball("green2", lastXPos, data.height, data.margin)
 
 
 ########################################################################
