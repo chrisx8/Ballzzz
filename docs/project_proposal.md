@@ -29,6 +29,7 @@ When the game ends, scores are automatically sent to a server. Player can see th
 - [x] On each shot, all balls are released.
 - [x] When a shot is complete, new blocks are randomly generated on the top row.
 - [x] When a block reaches the bottom of the screen, the game overs.
+- [x] Player can pause game.
 
 **Since Ballzzz is simply Ballz on steroids, other more complicated features will (probablyy) be implemented**:
 

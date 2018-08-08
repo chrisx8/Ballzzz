@@ -2,6 +2,12 @@ from tkinter import PhotoImage, Label
 
 
 class UserInterface(object):
+    def drawPaused(self, canvas, data):
+        canvas.create_rectangle(0, data.height//2-40, data.width,
+                                data.height//2+40, fill="purple", outline="")
+        canvas.create_text(data.width//2, data.height//2, text="Paused",
+                           fill="White", font="Verdana 28 bold")
+
     def drawMargin(self, canvas, data):
         # top
         canvas.create_rectangle(0, 0, data.width, data.margin,
@@ -18,9 +24,24 @@ class UserInterface(object):
         # draw score
         canvas.create_text(data.width//2, data.margin//2,
                            text="Score: %d" % data.score, fill="white")
-        # draw instruction
-        canvas.create_text(data.width//2, data.height-data.margin//2,
-                           text="Press R to restart game", fill="white")
+        # draw resume instruction when paused and ignore rest
+        if data.paused:
+            canvas.create_text(data.width // 2, data.height - data.margin // 2,
+                               text="Press any key to resume", fill="white")
+            return
+        # draw speedup instruction
+        if data.timer > 10000 and data.timerDelay == 30:
+            # alternating color
+            if data.timer % 600 <= 300:
+                canvas.create_text(data.width//2, data.height-data.margin//2,
+                                   text="Press A to speed up", fill="red")
+            else:
+                canvas.create_text(data.width//2, data.height-data.margin//2,
+                                   text="Press A to speed up", fill="white")
+        # draw restart instruction
+        else:
+            canvas.create_text(data.width//2, data.height-data.margin//2,
+                               text="Press R to restart game", fill="white")
 
     def drawStart(self, canvas, data):
         canvas.create_rectangle(0, 0, data.width, data.height, fill="gray18")

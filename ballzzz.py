@@ -35,6 +35,7 @@ def init(data):
     data.board = createBoard(data.width, data.height, data.margin)
     # Scoring and game state
     data.startGame, data.gameOver = False, False
+    data.paused = False
     data.drawLeaderboard = False
     data.score = 1
     data.bestScore = None
@@ -68,7 +69,7 @@ def mousePressed(event, data):
             init(data)
         return
     # ignore rest when game isn't started or there are moving balls
-    if not data.startGame or data.movingBalls != []: return
+    if not data.startGame or data.movingBalls != [] or data.paused: return
     # copy initial ball and add to moving ball list
     # copyBall = Ball(data.ball.color, data.ball.cx, data.height, data.margin)
     while data.remainingBalls > 0:
@@ -87,19 +88,27 @@ def mousePressed(event, data):
 
 
 def keyPressed(event, data):
-    # TODO: REMOVE TESING CODE
-    if event.keysym == 'g':
-        data.gameOver = True
-        apiResp = data.api.uploadScore(data.score)
-        data.rank = apiResp['ranking']
-        data.bestScore = apiResp['score']
-    if event.keysym == 'h':
-        data.score += 10
-    # TODO: END TESTING CODE
+    # TODO: REMOVE TESTING CODE
+    # TESING CODE
+    # if event.keysym == 'g':
+    #     data.gameOver = True
+    #     apiResp = data.api.uploadScore(data.score)
+    #     data.rank = apiResp['ranking']
+    #     data.bestScore = apiResp['score']
+    # if event.keysym == 'h':
+    #     data.score += 10
+    # END TESTING CODE
+    # when paused, press any key to resume game and ignore rest
+    if data.paused:
+        data.paused = False
+        return
     # press R to restart during game play
-    if data.startGame and not data.gameOver and event.keysym == 'r':
-        init(data)
-        data.startGame = True
+    if data.startGame and not data.gameOver:
+        if event.keysym == 'p':
+            data.paused = True
+        elif event.keysym == 'r':
+            init(data)
+            data.startGame = True
     # ignore rest when game is over or when game isn't started
     if data.gameOver or not data.startGame: return
     # Speed up ball if user presses A
@@ -109,7 +118,7 @@ def keyPressed(event, data):
 
 def timerFired(data):
     # ignore all if game isn't started
-    if data.gameOver or not data.startGame: return
+    if data.gameOver or not data.startGame or data.paused: return
     # increment timer of current shot if balls are moving
     if len(data.movingBalls) != 0: data.timer += data.timerDelay
     print(data.timer)
@@ -151,6 +160,7 @@ def redrawAll(canvas, data):
     for row in data.board:
         for block in row:
             if block: block.draw(canvas)
+    # draw ball counter
     if data.remainingBalls > 0:
         canvas.create_text(data.ballCountPos,
                            text="x%d" % data.remainingBalls, fill="white")
@@ -160,6 +170,9 @@ def redrawAll(canvas, data):
     for ball in data.movingBalls:
         if isinstance(ball, Ball):
             ball.draw(canvas)
+    # draw paused banner
+    if data.paused:
+        data.ui.drawPaused(canvas, data)
 
 
 # Handling ball hitting borders
@@ -210,8 +223,6 @@ def processBoardObjectCollision(data, ball):
                 # remove empty blocks
                 if data.board[row][col].number == 0:
                     data.board[row][col] = None
-
-
 
 
 ########################################################################

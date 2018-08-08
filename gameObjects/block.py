@@ -5,7 +5,7 @@ from gameObjects.ball import SuperBall
 
 class Block(object):
     def __init__(self, row, col, margin, countBalls):
-        colors = ('green2', 'hotPink')
+        colors = ('green2', 'hotPink', 'dodgerblue')
         self.dimension = 40
         self.margin = margin
         self.row = row

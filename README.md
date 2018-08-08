@@ -27,9 +27,10 @@ A CMU 15-112 Term Project.
 ### Changes since TP1
 
 - Scores are automatically uploaded to the scoreboard server.
-- Game Over UI changes to show ranking and restart and exit button.
+- Start screen and Game Over UI included buttons, and are mouse-navigable.
 - Added special targets. When the ball hits a target, player gets an extra ball.
 - Fixed a block collision bug. Insufficient collision checking in the `Ball` class was causing every collisions to be detected as top/bottom collision.
 - Prevent infinite bouncing from happening.
 - Randomize initial position of the ball.
-- When player has more than one balls, draw all balls and handle their collisions independently.
+- When player has more than one balls, all balls are released at the same time and collisions are handled independently.
+- Implemented SuperBall
