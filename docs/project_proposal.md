@@ -2,7 +2,17 @@
 
 ## Project description
 
-Ballzzz is an enhanced version of Ballz (a popular game by Ketchapp), with different difficulty levels and customization options.
+Ballzzz is an enhanced version of Ballz (a popular game by Ketchapp) with more features.
+
+The game starts with a row of random blocks. In this game, the players shoots the ball(s) to the user-provided direction via mouse clicks. All balls are released when player shoots. The ball(s) refects when blocks or borders are hit. The player is able to get additional balls by hitting special targets. Then game ends when a block reaches the bottom row.
+
+After each completed shot, the board shifts down one row, and new blocks are generated on the top row. Player gets rewarded 1 point each time the board shifts.
+
+When the players reach a score of 50, the game automatically changes into "hard mode". Player also has the option to switch to hard mode at any time.
+
+Optionally, player can create their own board by drawing a pattern, a board is generated based on the pattern. 
+
+When the game ends, scores are automatically sent to a server. Player can see their ranking on the server and a leaderboard, both in-game and on a website.
 
 ## Competitive Analysis
 
@@ -16,21 +26,23 @@ Ballzzz is an enhanced version of Ballz (a popular game by Ketchapp), with diffe
 - [x] When the number of a block reaches 0, it's removed from the screen.
 - [x] The ball reflects on the edges of the board and blocks (if number is greater than 1).
 - [x] Players get additional balls by hitting special targets.
-- [ ] On each shot, all balls are released.
+- [x] On each shot, all balls are released.
 - [x] When a shot is complete, new blocks are randomly generated on the top row.
 - [x] When a block reaches the bottom of the screen, the game overs.
 
 **Since Ballzzz is simply Ballz on steroids, other more complicated features will (probablyy) be implemented**:
 
-- [ ] [EASY] After the game is over, scores are sent to a server, and rankings are displayed on the game-over screen.
-- [ ] [EASY] Players can see the top scores on a webpage hosted on the same server.
+- [x] [EASY] After the game is over, scores are sent to a server, and rankings are displayed on the game-over screen.
+- [x] [EASY] Players can see the top scores on a webpage hosted on the same server.
+- [ ] [EASY] Players can see the top 5 scores in the game.
+- [ ] [MEDIUM] Generate board based on a shape that the player draws
 - [ ] [MEDIUM] Store game state
 - [ ] [MEDIUM] Difficulty selection
 - [ ] [MEDIUM] Increased difficulty when score exceeds 50
 - [ ] [MEDIUM] A "Super Ball" ([definition](#super-ball)) is awarded when one of these conditions are met:
-  - Every 10 shots (only in Easy mode)
-  - Average hits per ball ([definition](#average-hits-per-ball)) of a shot is greater than 10
-- [ ] [MEDIUM] Multiplayer mode. Two players shoot from opposite sides of the board.
+  - [ ] Every 10 shots (only in Easy mode)
+  - [ ] Average hits per ball ([definition](#average-hits-per-ball)) of a shot is greater than 10
+- [ ] [HARD] Multiplayer mode. Two players shoot from opposite sides of the board.
 - [ ] [HARD] The balls can bounce off of each other
 - [ ] [HARD] A "cheat mode" that finds the best way to make the current move.
 
@@ -60,6 +72,7 @@ Ballzzz
     └── design_proposal.md            (this document)
     └── storyboard.png                (storyboard)
 ├── gameObjects
+    ├── api.py                        (API interaction object)
     ├── ball.py                       (Ball and SuperBall objects)
     ├── block.py                      (Block objects)
     ├── board.py                      (Board helper functions)

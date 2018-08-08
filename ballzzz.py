@@ -35,24 +35,37 @@ def init(data):
     data.board = createBoard(data.width, data.height, data.margin)
     # Scoring and game state
     data.startGame, data.gameOver = False, False
+    data.drawLeaderboard = False
     data.score = 1
     data.bestScore = None
     data.rank = None
     # current shot timer
     data.timer = 0
     # Define api connection
-    data.api = API('haha')
+    data.api = API('johnson')
     # generate between 2 and 4 blocks on the top row initially
     countInitialBlocks = random.randint(2, 4)
     generateBlocks(countInitialBlocks, data)
 
 
 def mousePressed(event, data):
-    # TODO: MOUSE-NAVIGABLE UI
     # mouse navigation on game over screen, and ignore rest
-    if data.gameOver and data.width//2-60 <= event.x <= data.width//2+60:
+    # play/restart button
+    if data.width//2-60 <= event.x <= data.width//2+60 and \
+            data.height//2+140 <= event.y <= data.height//2+180 and \
+            not data.drawLeaderboard and (data.gameOver or not data.startGame):
         init(data)
         data.startGame = True
+        return
+    # leaderboard/exit button
+    if data.width//2-60 <= event.x <= data.width//2+60 and \
+            data.height//2+200 <= event.y <= data.height//2+240:
+        if data.drawLeaderboard:
+            data.drawLeaderboard = False
+        elif not data.startGame:
+            data.drawLeaderboard = True
+        elif data.gameOver:
+            init(data)
         return
     # ignore rest when game isn't started or there are moving balls
     if not data.startGame or data.movingBalls != []: return
@@ -82,12 +95,10 @@ def keyPressed(event, data):
         data.bestScore = apiResp['score']
     if event.keysym == 'h':
         data.score += 10
-    # press R to restart at any time after game started
-    # if data.startGame and event.keysym == 'r':
-    #     init(data)
-    #     data.startGame = True
-    # start game
-    if not data.startGame and event.keysym == 's':
+    # TODO: END TESTING CODE
+    # press R to restart during game play
+    if data.startGame and not data.gameOver and event.keysym == 'r':
+        init(data)
         data.startGame = True
     # ignore rest when game is over or when game isn't started
     if data.gameOver or not data.startGame: return
@@ -120,6 +131,10 @@ def timerFired(data):
 
 
 def redrawAll(canvas, data):
+    # draw leaderboard
+    if data.drawLeaderboard:
+        data.ui.drawLeaderboard(canvas, data)
+        return
     # draw start screen
     if not data.startGame:
         data.ui.drawStart(canvas, data)
@@ -131,7 +146,7 @@ def redrawAll(canvas, data):
     # draw black background
     canvas.create_rectangle(0, 0, data.width, data.height, fill="black")
     # draw margin
-    drawMargin(canvas, data)
+    data.ui.drawMargin(canvas, data)
     # draw blocks
     for row in data.board:
         for block in row:
@@ -139,9 +154,6 @@ def redrawAll(canvas, data):
     if data.remainingBalls > 0:
         canvas.create_text(data.ballCountPos,
                            text="x%d" % data.remainingBalls, fill="white")
-    # draw score
-    canvas.create_text(data.width//2, data.margin//2,
-                       text="Score: %d" % data.score, fill="white")
     # draw initial ball
     data.ball.draw(canvas)
     # draw moving balls
@@ -200,19 +212,6 @@ def processBoardObjectCollision(data, ball):
                     data.board[row][col] = None
 
 
-def drawMargin(canvas, data):
-    # top
-    canvas.create_rectangle(0, 0, data.width, data.margin,
-                            fill="gray25", outline="")
-    # left
-    canvas.create_rectangle(0, 0, data.margin, data.height,
-                            fill="gray25", outline="")
-    # bottom
-    canvas.create_rectangle(0, data.height-data.margin, data.width,
-                            data.height, fill="gray25", outline="")
-    # right
-    canvas.create_rectangle(data.width-data.margin, 0, data.width,
-                            data.height, fill="gray25", outline="")
 
 
 ########################################################################

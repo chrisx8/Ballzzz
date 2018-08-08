@@ -2,6 +2,26 @@ from tkinter import PhotoImage, Label
 
 
 class UserInterface(object):
+    def drawMargin(self, canvas, data):
+        # top
+        canvas.create_rectangle(0, 0, data.width, data.margin,
+                                fill="gray25", outline="")
+        # left
+        canvas.create_rectangle(0, 0, data.margin, data.height,
+                                fill="gray25", outline="")
+        # bottom
+        canvas.create_rectangle(0, data.height - data.margin, data.width,
+                                data.height, fill="gray25", outline="")
+        # right
+        canvas.create_rectangle(data.width - data.margin, 0, data.width,
+                                data.height, fill="gray25", outline="")
+        # draw score
+        canvas.create_text(data.width//2, data.margin//2,
+                           text="Score: %d" % data.score, fill="white")
+        # draw instruction
+        canvas.create_text(data.width//2, data.height-data.margin//2,
+                           text="Press R to restart game", fill="white")
+
     def drawStart(self, canvas, data):
         canvas.create_rectangle(0, 0, data.width, data.height, fill="gray18")
         """
@@ -16,9 +36,18 @@ class UserInterface(object):
         label = Label(image=img)
         label.image = img
         canvas.create_image(data.width//2, data.height//4, image=img)
-        # start button
-        canvas.create_text(data.width//2, data.height//2,
-                           text="press S to start", fill="red")
+        # play button
+        canvas.create_rectangle(data.width//2-60, data.height//2+140,
+                                data.width//2+60, data.height//2+180,
+                                outline="", fill="green")
+        canvas.create_text(data.width//2, data.height//2+160, fill="white",
+                           text="Play", font="Verdana 14")
+        # Leaderboard button
+        canvas.create_rectangle(data.width//2-60, data.height//2+200,
+                                data.width//2+60, data.height//2+240,
+                                outline="", fill="purple")
+        canvas.create_text(data.width//2, data.height//2+220, fill="white",
+                           text="Leaderboard", font="Verdana 13")
 
     def drawGameOver(self, canvas, data):
         canvas.create_rectangle(0, 0, data.width, data.height, fill="gray18")
@@ -67,3 +96,13 @@ class UserInterface(object):
                                 outline="", fill="red4")
         canvas.create_text(data.width//2, data.height//2+220, fill="white",
                            text="Exit", font="Verdana 14")
+
+    def drawLeaderboard(self, canvas, data):
+        canvas.create_rectangle(0, 0, data.width, data.height, fill="green2")
+        canvas.create_text(100, 100, text='leaderboard')
+        # back button
+        canvas.create_rectangle(data.width//2-60, data.height//2+200,
+                                data.width//2+60, data.height//2+240,
+                                outline="", fill="red4")
+        canvas.create_text(data.width//2, data.height//2+220, fill="white",
+                           text="Back", font="Verdana 14")
