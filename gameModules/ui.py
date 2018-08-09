@@ -67,6 +67,12 @@ def drawStart(canvas, data):
     label = Label(image=img)
     label.image = img
     canvas.create_image(data.width//2, data.height//4, image=img)
+    # draw button
+    canvas.create_rectangle(data.width//2-60, data.height//2+80,
+                            data.width//2+60, data.height//2+120,
+                            outline="", fill="turquoise4")
+    canvas.create_text(data.width//2, data.height//2+100, fill="white",
+                       text="Draw a board", font="Verdana 12")
     # play button
     canvas.create_rectangle(data.width//2-60, data.height//2+140,
                             data.width//2+60, data.height//2+180,
@@ -131,8 +137,38 @@ def drawGameOver(canvas, data):
 
 
 def drawLeaderboard(canvas, data):
-    canvas.create_rectangle(0, 0, data.width, data.height, fill="green2")
-    canvas.create_text(100, 100, text='leaderboard')
+    canvas.create_rectangle(0, 0, data.width, data.height, fill="gray25")
+    """
+    Displaying image in Tkinter
+    https://stackoverflow.com/questions/35024118/
+        how-to-load-an-image-into-a-python-3-4-tkinter-window
+    http://effbot.org/pyfaq/why-do-my-tkinter-images-not-appear.htm
+    """
+    # logo
+    imgPath = data.assetPath + 'ballzzz.png'
+    img = PhotoImage(file=imgPath)
+    label = Label(image=img)
+    label.image = img
+    canvas.create_image(data.width//2, 60, image=img)
+    yPos = 150
+    canvas.create_text(50, yPos, fill="white",
+                       text="Rank", anchor="n", font="Verdana 14 bold")
+    canvas.create_text(data.width // 2, yPos, fill="white",
+                       text="Username", anchor="n", font="Verdana 14 bold")
+    canvas.create_text(data.width-50, yPos, fill="white",
+                       text="Score", anchor="n", font="Verdana 14 bold")
+    yPos += 30
+    for entry in data.topTen:
+        canvas.create_text(50, yPos, fill="white",
+                           text=data.topTen[entry]['ranking'], anchor="n",
+                           font="Verdana 12")
+        canvas.create_text(data.width//2, yPos, fill="white",
+                           text=data.topTen[entry]['username'], anchor="n",
+                           font="Verdana 12")
+        canvas.create_text(data.width-50, yPos, fill="white",
+                           text=data.topTen[entry]['score'], anchor="n",
+                           font="Verdana 12")
+        yPos += 25
     # back button
     canvas.create_rectangle(data.width//2-60, data.height//2+200,
                             data.width//2+60, data.height//2+240,

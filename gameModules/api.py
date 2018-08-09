@@ -26,7 +26,7 @@ class API(object):
             # return error message from server
             return {'message': postResponse.json()['message']}
     
-    def getTopFive(self):
+    def getTopTen(self):
         # get top five scores from API
         try:
             getResponse = requests.get(self.url)
@@ -36,7 +36,8 @@ class API(object):
         # API response is successful
         if getResponse.status_code == 200:
             # return success message and raking
-            return {'message': 'Score uploaded', 'response': getResponse}
+            return {'message': 'Got top ten scores!',
+                    'response': getResponse.json()}
         else:
             # return error message from server
             return {'message': getResponse.json()['message']}

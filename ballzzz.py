@@ -9,7 +9,7 @@ from gameModules import drawboard
 from gameModules import ui
 from gameModules.api import API
 from gameModules.ball import Ball, SuperBall
-from gameModules.block import Block, Target, generateBlocks
+from gameModules.block import Block, Target
 
 
 ########################################################################
@@ -62,6 +62,13 @@ def init(data):
 
 def mousePressed(event, data):
     # mouse navigation on game over screen, and ignore rest
+    # drawboard button
+    if data.width // 2 - 60 <= event.x <= data.width // 2 + 60 and \
+            data.height // 2 + 80 <= event.y <= data.height // 2 + 120 and \
+            not data.drawLeaderboard and not data.startGame:
+        # open drawboard
+        drawboard.run(data)
+        return
     # play/restart button
     if data.width//2-60 <= event.x <= data.width//2+60 and \
             data.height//2+140 <= event.y <= data.height//2+180 and \
@@ -81,6 +88,7 @@ def mousePressed(event, data):
         if data.drawLeaderboard:
             data.drawLeaderboard = False
         elif not data.startGame:
+            data.topTen = data.api.getTopTen()['response']
             data.drawLeaderboard = True
         elif data.gameOver:
             init(data)
@@ -108,9 +116,6 @@ def mousePressed(event, data):
 
 
 def keyPressed(event, data):
-    # open drawboard
-    if event.keysym == "p":
-        drawboard.run(data)
     # when paused, press any key to resume game and ignore rest
     if data.paused:
         data.paused = False
@@ -247,7 +252,7 @@ def shotComplete(data, lastXPos):
     # reset bounces and average hits per ball
     data.bounces, data.averageHitsPerBall = 0, 0
     # reset timer and speed
-    data.timerDelay = 30
+    data.timerDelay = 15
     data.timer = 0
 
 

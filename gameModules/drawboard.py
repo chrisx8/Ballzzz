@@ -149,7 +149,7 @@ def run(data):
     cited from https://stackoverflow.com/questions/2395431/
                 using-tkinter-in-python-to-edit-the-title-bar
     """
-    root.title("Ballzzz")
+    root.title("Ballzzz Drawboard")
     """
     Change Tkinter window icon
     cited from https://stackoverflow.com/questions/18537918/set-window-icon
