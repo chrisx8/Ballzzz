@@ -9,7 +9,6 @@ from tkinter import *
 
 
 def init(data):
-    data.margin = 20
     # points of the line
     data.segments = set()
     # previous mouse position

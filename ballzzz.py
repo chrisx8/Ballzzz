@@ -1,14 +1,15 @@
 import copy
 import math
 import os
+import random
 from tkinter import *
 
+from gameModules import board
 from gameModules import drawboard
 from gameModules import ui
 from gameModules.api import API
 from gameModules.ball import Ball, SuperBall
-from gameModules.block import Block, Target
-from gameModules.board import *
+from gameModules.block import Block, Target, generateBlocks
 
 
 ########################################################################
@@ -24,7 +25,7 @@ def init(data):
     """
     data.assetPath = os.path.dirname(os.path.abspath(__file__)) + \
                      os.sep + 'assets' + os.sep
-    data.timerDelay = 30
+    data.timerDelay = 15
     data.margin = 20
     # dimension of blocks
     data.dimension = 40
@@ -40,8 +41,6 @@ def init(data):
     data.shots = 0
     # Where to display ball count depends on ball pos
     data.ballCountPos = (data.ball.cx, data.ball.cy-data.ball.radius-10)
-    # Create a board
-    data.board = createBoard(data.width, data.height, data.margin)
     # Scoring and game state
     data.startGame, data.gameOver = False, False
     data.paused = False
@@ -55,9 +54,8 @@ def init(data):
     data.timer = 0
     # Define api connection
     data.api = API('johnson')
-    # generate between 2 and 4 blocks on the top row initially
-    countInitialBlocks = random.randint(2, 4)
-    generateBlocks(countInitialBlocks, data)
+    # points of the user-drawn pattern
+    data.segments = set()
     # X pos for bottom margin scroll text
     data.bottomScrollX = data.width
 
@@ -68,8 +66,14 @@ def mousePressed(event, data):
     if data.width//2-60 <= event.x <= data.width//2+60 and \
             data.height//2+140 <= event.y <= data.height//2+180 and \
             not data.drawLeaderboard and (data.gameOver or not data.startGame):
-        init(data)
+        if data.gameOver: init(data)
         data.startGame = True
+        # create a board from drawing
+        if len(data.segments) != 0:
+            board.createBoardFromDrawing(data)
+        else:
+            # create random board
+            board.createRandomBoard(data)
         return
     # leaderboard/exit button
     if data.width//2-60 <= event.x <= data.width//2+60 and \
@@ -107,16 +111,6 @@ def keyPressed(event, data):
     # open drawboard
     if event.keysym == "p":
         drawboard.run(data)
-    # TODO: REMOVE TESTING CODE
-    # TESING CODE
-    # if event.keysym == 'g':
-    #     data.gameOver = True
-    #     apiResp = data.api.uploadScore(data.score)
-    #     data.rank = apiResp['ranking']
-    #     data.bestScore = apiResp['score']
-    if event.keysym == 'h':
-        data.score = 50
-    # END TESTING CODE
     # when paused, press any key to resume game and ignore rest
     if data.paused:
         data.paused = False
@@ -244,7 +238,7 @@ def shotComplete(data, lastXPos):
             # shift down every block
             if block: block.moveDown()
     # Create new row on top of board
-    moveBoard(data)
+    board.moveBoard(data)
     # create a new ball
     createNewBall(data, lastXPos)
     data.movingBalls = []
@@ -308,7 +302,7 @@ def run(width=300, height=300):
     data = Struct()
     data.width = width
     data.height = height
-    data.timerDelay = 30   # milliseconds (about 30fps)
+    data.timerDelay = 15   # milliseconds (about 30fps)
     root = Tk()
     init(data)
     """
