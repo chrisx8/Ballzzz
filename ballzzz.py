@@ -3,6 +3,7 @@ import math
 import os
 from tkinter import *
 
+from gameObjects import drawboard
 from gameObjects.api import API
 from gameObjects.ball import Ball, SuperBall
 from gameObjects.block import Block, Target
@@ -16,7 +17,11 @@ from gameObjects.ui import UserInterface
 ########################################################################
 
 def init(data):
-    # current asset path
+    """
+    Get current paths cited from
+    https://stackoverflow.com/questions/3430372/
+            how-to-get-full-path-of-current-files-directory-in-python
+    """
     data.assetPath = os.path.dirname(os.path.abspath(__file__)) + \
                      os.sep + 'assets' + os.sep
     data.timerDelay = 30
@@ -100,6 +105,9 @@ def mousePressed(event, data):
 
 
 def keyPressed(event, data):
+    # open drawboard
+    if event.keysym == "p":
+        drawboard.run(data)
     # TODO: REMOVE TESTING CODE
     # TESING CODE
     # if event.keysym == 'g':
@@ -294,9 +302,6 @@ def run(width=300, height=300):
     """
     Change Tkinter window icon
     cited from https://stackoverflow.com/questions/18537918/set-window-icon
-    Get current path
-    cited from https://stackoverflow.com/questions/3430372/
-                how-to-get-full-path-of-current-files-directory-in-python
     """
     root.iconbitmap(data.assetPath + 'ballzzz_icon.ico')
     # create the root and the canvas

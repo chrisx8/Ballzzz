@@ -44,7 +44,6 @@ class UserInterface(object):
                 data.bottomScrollX = data.width
             else:
                 data.bottomScrollX -= 3
-            print(data.bottomScrollX)
             canvas.create_text(data.bottomScrollX, data.height-data.margin//2,
                                text="Current Difficulty: %d                 "
                                     % data.difficulty +
