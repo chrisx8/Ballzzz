@@ -13,29 +13,30 @@ score_parser.add_argument('username',
                           help='Your username should contain with 4-50 '
                           'characters, with only letters and numbers.',
                           required=True)
-score_parser.add_argument('score', 
+score_parser.add_argument('score',
                           help='This field is required', required=True)
+
 
 # Score API
 class PublishScore(Resource):
     # GET: get the top 5
     def get(self):
-        top_five = dict()
+        top_ten = dict()
         # find all users, sorted by score
         board = DBSession.query(Scoreboard).order_by("score desc").all()
         # find top five users if there's more than 5 users
-        if len(board) > 5:
-            for i in range(5):
-                # result payload contains username, score, ranking (handles ties)
-                top_five[i] = self.build_user_data_json(board, i)
+        if len(board) > 10:
+            for i in range(10):
+                # result contains username, score, ranking (handles ties)
+                top_ten[i] = self.build_user_data_json(board, i)
         # otherwise find all users
         else:
             for i in range(len(board)):
-                # result payload contains username, score, ranking (handles ties)
-                top_five[i] = self.build_user_data_json(board, i)
+                # result contains username, score, ranking (handles ties)
+                top_ten[i] = self.build_user_data_json(board, i)
         # close DB session
         DBSession.close()
-        return top_five, 200
+        return top_ten, 200
 
     # POST: submit score
     def post(self):
@@ -58,10 +59,6 @@ class PublishScore(Resource):
         board = DBSession.query(Scoreboard).order_by("score desc").all()
         # find index of user
         index = board.index(user_data)
-        # for i in range(len(board)):
-            # if board[i] == user_data:
-            #     index = i
-            #     break
         # close DB session
         DBSession.close()
         return self.build_user_data_json(board, index), 201
@@ -69,4 +66,5 @@ class PublishScore(Resource):
     def build_user_data_json(self, board, i):
         return {'username': board[i].username, 
                 'score': board[i].score, 
-                'ranking': get_rankings(board)[i]}
+                'ranking': get_rankings(board)[i]
+                }
