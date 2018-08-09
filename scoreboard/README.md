@@ -17,7 +17,7 @@ Run the following in your command line (`Terminal.app` on MacOS)
 ```bash
 # Clone project source from Git
 git clone https://github.com/chrisx8/Ballzzz.git
-cd PyTetris/scoreboard
+cd Ballzzz/scoreboard
 
 # Install pip before continuing
 # Install virtualenv
@@ -45,8 +45,8 @@ Running with a virtual environment is HIGHLY RECOMMENDED, as running directly ca
 
 ```bash
 # Clone project source from Git
-git clone https://github.com/chrisx8/PyTetris.git
-cd PyTetris/scoreboard
+git clone https://github.com/chrisx8/Ballzzz.git
+cd Ballzzz/scoreboard
 
 # Install pip before continuing
 # Install dependencies
@@ -56,7 +56,3 @@ pip install --user -r requirements.txt
 # Change 0.0.0.0:8000 to something else if you don't want the server on port 8000, or you don't want the server to be accessible from everywhere.
 gunicorn wsgi:app -b 0.0.0.0:8000
 ```
-
-### Run with Docker
-
-Coming soon!
