@@ -1,6 +1,6 @@
 import random
 
-from gameObjects.ball import SuperBall
+from gameModules.ball import SuperBall
 
 
 class Block(object):

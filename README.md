@@ -28,6 +28,11 @@ The entire project is available on [GitHub](https://github.com/chrisx8/Ballzzz/)
 
 ## Changelog
 
+### Changes since TP2
+
+- Player can draw a pattern on the drawboard, and the game board will be generated based on what the player draws.
+- Fixed a bug where a SuperBall can clear the entire board due to insufficient type checking.
+ 
 ### Changes since TP1
 
 - Scores are automatically uploaded to the scoreboard server.

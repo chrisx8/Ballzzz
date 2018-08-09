@@ -3,12 +3,12 @@ import math
 import os
 from tkinter import *
 
-from gameObjects import drawboard
-from gameObjects.api import API
-from gameObjects.ball import Ball, SuperBall
-from gameObjects.block import Block, Target
-from gameObjects.board import *
-from gameObjects.ui import UserInterface
+from gameModules import drawboard
+from gameModules import ui
+from gameModules.api import API
+from gameModules.ball import Ball, SuperBall
+from gameModules.block import Block, Target
+from gameModules.board import *
 
 
 ########################################################################
@@ -28,8 +28,6 @@ def init(data):
     data.margin = 20
     # dimension of blocks
     data.dimension = 40
-    # UI object
-    data.ui = UserInterface()
     # Ball object that stays on the bottom.
     randomBallPos = random.randint(data.margin+10, data.width-data.margin-10)
     data.ball = Ball("green2", randomBallPos, data.height, data.margin)
@@ -37,8 +35,9 @@ def init(data):
     data.ballCount, data.remainingBalls = 1, 1
     # Moving balls
     data.movingBalls = []
-    # number of bounces in each shot and average hit per ball
+    # number of bounces in each shot and number of shots
     data.bounces = 0
+    data.shots = 0
     # Where to display ball count depends on ball pos
     data.ballCountPos = (data.ball.cx, data.ball.cy-data.ball.radius-10)
     # Create a board
@@ -115,8 +114,8 @@ def keyPressed(event, data):
     #     apiResp = data.api.uploadScore(data.score)
     #     data.rank = apiResp['ranking']
     #     data.bestScore = apiResp['score']
-    # if event.keysym == 'h':
-    #     data.score = 50
+    if event.keysym == 'h':
+        data.score = 50
     # END TESTING CODE
     # when paused, press any key to resume game and ignore rest
     if data.paused:
@@ -164,20 +163,20 @@ def timerFired(data):
 def redrawAll(canvas, data):
     # draw leaderboard
     if data.drawLeaderboard:
-        data.ui.drawLeaderboard(canvas, data)
+        ui.drawLeaderboard(canvas, data)
         return
     # draw start screen
     if not data.startGame:
-        data.ui.drawStart(canvas, data)
+        ui.drawStart(canvas, data)
         return
     # draw game over screen
     if data.gameOver:
-        data.ui.drawGameOver(canvas, data)
+        ui.drawGameOver(canvas, data)
         return
     # draw black background
     canvas.create_rectangle(0, 0, data.width, data.height, fill="black")
     # draw margin
-    data.ui.drawMargin(canvas, data)
+    ui.drawMargin(canvas, data)
     # draw blocks
     for row in data.board:
         for block in row:
@@ -194,7 +193,7 @@ def redrawAll(canvas, data):
             ball.draw(canvas)
     # draw paused banner
     if data.paused:
-        data.ui.drawPaused(canvas, data)
+        ui.drawPaused(canvas, data)
 
 
 # Handling ball hitting borders
@@ -207,22 +206,7 @@ def processBorderCollision(data, ball):
         data.movingBalls.remove(ball)
     # if last ball reaches the bottom
     if lastXPos is not None and len(data.movingBalls) == 0:
-        for row in data.board:
-            for block in row:
-                # shift down every block
-                if block: block.moveDown()
-        # Create new row on top of board
-        moveBoard(data)
-        # create a new ball
-        createNewBall(data, lastXPos)
-        data.movingBalls = []
-        data.remainingBalls = data.ballCount
-        data.ballCountPos = (data.ball.cx, data.ball.cy-data.ball.radius-10)
-        # reset bounces and average hits per ball
-        data.bounces, data.averageHitsPerBall = 0, 0
-        # reset timer and speed
-        data.timerDelay = 30
-        data.timer = 0
+        shotComplete(data, lastXPos)
 
 
 # handling target/block collisions
@@ -238,8 +222,15 @@ def processBoardObjectCollision(data, ball):
             if isinstance(data.board[row][col], Block) and \
                     ball.isCollisionWithBlock(data.board[row][col]):
                 data.bounces += 1
-                # ball bouncing
-                ball.collisionWithBlock(data.board[row][col])
+                # ball bouncing. True if colliding with SuperBall
+                if ball.collisionWithBlock(data.board[row][col]):
+                    # block number change to 0
+                    data.board[row][col].onCollision(ball)
+                    # remove empty block
+                    data.board[row][col] = None
+                    # create new ball
+                    shotComplete(data, data.ball.cx)
+                    return
                 # block number change
                 data.board[row][col].onCollision(ball)
                 # remove empty blocks
@@ -247,9 +238,36 @@ def processBoardObjectCollision(data, ball):
                     data.board[row][col] = None
 
 
+def shotComplete(data, lastXPos):
+    for row in data.board:
+        for block in row:
+            # shift down every block
+            if block: block.moveDown()
+    # Create new row on top of board
+    moveBoard(data)
+    # create a new ball
+    createNewBall(data, lastXPos)
+    data.movingBalls = []
+    data.remainingBalls = data.ballCount
+    data.ballCountPos = (data.ball.cx, data.ball.cy - data.ball.radius - 10)
+    # reset bounces and average hits per ball
+    data.bounces, data.averageHitsPerBall = 0, 0
+    # reset timer and speed
+    data.timerDelay = 30
+    data.timer = 0
+
+
 def createNewBall(data, lastXPos):
     averageHitsPerBall = data.bounces // data.ballCount
-    if averageHitsPerBall > 10 and not isinstance(data.ball, SuperBall):
+    """
+    generate super ball if
+    - previous ball isn't a super ball
+    - average hits per ball > 10
+    - every 10 shots in easy mode
+    """
+    if not isinstance(data.ball, SuperBall) and \
+            (averageHitsPerBall > 10 or
+             (data.shots % 10 == 0 and data.difficulty == 1)):
         data.ball = SuperBall("hotPink", lastXPos,
                               data.height, data.margin)
     else:

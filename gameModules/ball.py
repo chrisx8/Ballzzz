@@ -13,7 +13,6 @@ class Ball(object):
         # change
         self.dx = 0
         self.dy = 0
-        self.quadrant = 0
         self.speed = 5
 
     def draw(self, canvas):
@@ -23,7 +22,6 @@ class Ball(object):
 
     def move(self, angle, quadrant):
         self.angle = angle
-        self.quadrant = quadrant
         self.dx = self.radius * math.cos(angle)
         self.dy = self.radius * math.sin(angle) * -1
         if quadrant == 2:
@@ -96,16 +94,6 @@ class Ball(object):
                 block.topLeft[0] < self.cx < block.bottomRight[0]:
             self.dy *= -1
 
-    def onCollision(self):
-        if self.quadrant == 1:
-            self.move(self.angle, 2)
-        elif self.quadrant == 2:
-            self.move(self.angle, 1)
-        elif self.quadrant == 3:
-            self.move(self.angle, 4)
-        elif self.quadrant == 4:
-            self.move(self.angle, 3)
-
 
 class SuperBall(Ball):
     def __init__(self, color, startX, canvasHeight, canvasMargin):
@@ -117,3 +105,8 @@ class SuperBall(Ball):
     def draw(self, canvas):
         super().draw(canvas)
         canvas.create_text(self.cx, self.cy, text="S")
+
+    def collisionWithBlock(self, block):
+        # true if collided
+        # destroy itself when colliding with block
+        return True

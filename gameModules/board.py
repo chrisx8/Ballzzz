@@ -1,6 +1,6 @@
 import random
 
-from gameObjects.block import generateBlocks
+from gameModules.block import generateBlocks
 
 
 def createBoard(canvasWidth, canvasHeight, margin):
@@ -28,3 +28,8 @@ def moveBoard(data):
     data.board.pop()
     # score+1 on each move
     data.score += 1
+    # increment shots
+    data.shots += 1
+    # if score is a multiple of 50, increase difficulty (up to 9)
+    if data.difficulty < 9 and data.score % 50 == 0:
+        data.difficulty += 1
