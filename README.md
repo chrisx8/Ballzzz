@@ -17,7 +17,7 @@ The entire project is available on [GitHub](https://github.com/chrisx8/Ballzzz/)
   - `ballzzz.py`
   - `ballzzz_icon.ico`
   - `requirements.txt`
-- Download everything in `gameObjects/` and everything in `assets/`
+- Download everything in `gameModules/` and everything in `assets/`
 - Install `requests` using `pip`:
 
   ```bash
