@@ -10,7 +10,7 @@ USERNAME_REGEX = re.compile('^[a-zA-Z0-9._-]{4,50}$')
 # accept and parse POST
 score_parser = reqparse.RequestParser()
 score_parser.add_argument('username',
-                          help='Your username should contain with 4-50 '
+                          help='Your username should contain 4-50 '
                           'characters, with only letters and numbers.',
                           required=True)
 score_parser.add_argument('score',

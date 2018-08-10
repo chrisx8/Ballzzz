@@ -40,7 +40,7 @@ When the game ends, scores are automatically sent to a server. Player can see th
   - [x] Every 10 shots (only in Easy mode)
   - [x] Average hits per ball ([definition](#average-hits-per-ball)) of a shot is greater than 10
 - [x] [MEDIUM] Generate board based on a shape that the player draws
-- [ ] [MEDIUM] Store game state
+- [x] [MEDIUM] Store game state
 - [x] [MEDIUM] Difficulty selection
 - [x] [MEDIUM] Increased difficulty when score is a multiple of 50
 - [ ] [HARD] Multiplayer mode. Two players shoot from opposite sides of the board.

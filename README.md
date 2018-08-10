@@ -31,7 +31,12 @@ The entire project is available on [GitHub](https://github.com/chrisx8/Ballzzz/)
 ### Changes since TP2
 
 - Player can draw a pattern on the drawboard, and the game board will be generated based on what the player draws.
+- Fixed a bug where player pattern parsing may result in list-out-of-range error.
 - Fixed a bug where a SuperBall can clear the entire board due to insufficient type checking.
+- Implemented leaderboard, which shows the top ten players.
+- Player can save the game and return to the main menu by pressing ESC.
+- 
+- Some minor UI improvements.
  
 ### Changes since TP1
 

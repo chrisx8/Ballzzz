@@ -1,7 +1,7 @@
 import requests
 
 class API(object):
-    def __init__(self, username, url="https://ballzzz.herokuapp.com"):
+    def __init__(self, username, url):
         self.username = username
         self.url = url + "/api/score/"
 

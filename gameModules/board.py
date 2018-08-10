@@ -34,8 +34,8 @@ def createBoardFromDrawing(data):
             # only use real mouse pos. ignore stored previous pos
             x1, y1 = segment[2], segment[3]
             # calculate row/col
-            col = x1 // cellDimention
-            row = y1 // cellDimention
+            col = (x1-data.margin) // cellDimention
+            row = (y1-data.margin) // cellDimention
             # create a block in row/col
             data.board[row][col] = Block(row, col, data.margin,
                                          data.ballCount, data.difficulty)

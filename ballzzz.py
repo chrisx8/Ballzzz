@@ -3,6 +3,7 @@ import math
 import os
 import random
 from tkinter import *
+from tkinter import messagebox
 
 from gameModules import board
 from gameModules import drawboard
@@ -25,41 +26,74 @@ def init(data):
     """
     data.assetPath = os.path.dirname(os.path.abspath(__file__)) + \
                      os.sep + 'assets' + os.sep
-    data.timerDelay = 15
+    data.timerDelay = 30
     data.margin = 20
     # dimension of blocks
     data.dimension = 40
-    # Ball object that stays on the bottom.
-    randomBallPos = random.randint(data.margin+10, data.width-data.margin-10)
-    data.ball = Ball("green2", randomBallPos, data.height, data.margin)
-    # number of available balls; number of unreleased balls
-    data.ballCount, data.remainingBalls = 1, 1
     # Moving balls
     data.movingBalls = []
-    # number of bounces in each shot and number of shots
+    # number of bounces in each shot
     data.bounces = 0
-    data.shots = 0
-    # Where to display ball count depends on ball pos
-    data.ballCountPos = (data.ball.cx, data.ball.cy-data.ball.radius-10)
     # Scoring and game state
     data.startGame, data.gameOver = False, False
-    data.paused = False
     data.drawLeaderboard = False
-    # difficulty 1-9. 1=easy
-    data.difficulty = 1
-    data.score = 1
     data.bestScore = None
     data.rank = None
-    # current shot timer
-    data.timer = 0
-    # Define api connection
-    data.api = API('johnson')
     # points of the user-drawn pattern
     data.segments = set()
     # X pos for bottom margin scroll text
     data.bottomScrollX = data.width
+    # try to load saved game
+    try:
+        import savedGame
+        """
+        Explicitly reload an imported module
+        https://emacs.stackexchange.com/questions/13476/how-to-force-a-python-
+            shell-to-re-import-modules-when-running-a-buffer
+        """
+        import importlib
+        importlib.reload(savedGame)
+        # load ball
+        data.ball = eval(savedGame.ball)
+        # load board
+        data.board = eval(savedGame.board)
+        # eval everything in board
+        tempBoard = eval(savedGame.board)
+        data.board = board.createEmptyBoard(data)
+        # eval everything in board
+        for row in range(len(tempBoard)):
+            for col in range(len(tempBoard[0])):
+                data.board[row][col] = eval(tempBoard[row][col])
+        # number of available balls; number of unreleased balls
+        data.ballCount = savedGame.ballCount
+        data.remainingBalls = savedGame.remainingBalls
+        # number of shots
+        data.shots = savedGame.shots
+        # difficulty 1-9. 1=easy
+        data.difficulty = savedGame.difficulty
+        data.score = savedGame.score
+        # current shot timer
+        data.timer = savedGame.timer
+        data.paused = savedGame.paused
+        # load username and url
+        data.username = savedGame.username
+        data.url = savedGame.url
+    # start as new game if saved game doesn't exist
+    except:
+        startNewGame(data)
+    # Define api connection
+    try:
+        # try to read username and url
+        data.username, data.url
+    # if url and username aren't defined, get from console
+    except AttributeError:
+        data.username, data.url = getUserInput()
+    # Where to display ball count depends on ball pos
+    data.ballCountPos = (data.ball.cx, data.ball.cy - data.ball.radius - 10)
+    data.api = API(data.username, data.url)
 
 
+# TODO: OPTIMIZE
 def mousePressed(event, data):
     # mouse navigation on game over screen, and ignore rest
     # drawboard button
@@ -73,14 +107,15 @@ def mousePressed(event, data):
     if data.width//2-60 <= event.x <= data.width//2+60 and \
             data.height//2+140 <= event.y <= data.height//2+180 and \
             not data.drawLeaderboard and (data.gameOver or not data.startGame):
-        if data.gameOver: init(data)
+        if data.gameOver:
+            init(data)
+            # create a board from drawing
+            if len(data.segments) != 0:
+                board.createBoardFromDrawing(data)
+            else:
+                # create random board
+                board.createRandomBoard(data)
         data.startGame = True
-        # create a board from drawing
-        if len(data.segments) != 0:
-            board.createBoardFromDrawing(data)
-        else:
-            # create random board
-            board.createRandomBoard(data)
         return
     # leaderboard/exit button
     if data.width//2-60 <= event.x <= data.width//2+60 and \
@@ -115,13 +150,19 @@ def mousePressed(event, data):
             ball.move(angle, 2)
 
 
+# TODO: OPTIMIZE
 def keyPressed(event, data):
     # when paused, press any key to resume game and ignore rest
     if data.paused:
+        data.bottomScrollX = data.width
         data.paused = False
         return
     # only check when playing
     if data.startGame and not data.gameOver and not data.paused:
+        # press ESC to go home when there's no moving balls
+        if data.movingBalls == [] and event.keysym == "Escape":
+            saveGame(data)
+            init(data)
         # Speed up ball if user presses A
         if data.timer >= 10000 and event.keysym == 'a':
             data.timerDelay = 5
@@ -131,6 +172,8 @@ def keyPressed(event, data):
         # press R to restart during game play
         elif event.keysym == 'r':
             init(data)
+            startNewGame(data)
+            board.createRandomBoard(data)
             data.startGame = True
         # press D to increase difficulty (up to 9)
         elif event.keysym == 'd' and data.difficulty < 9:
@@ -252,7 +295,7 @@ def shotComplete(data, lastXPos):
     # reset bounces and average hits per ball
     data.bounces, data.averageHitsPerBall = 0, 0
     # reset timer and speed
-    data.timerDelay = 15
+    data.timerDelay = 30
     data.timer = 0
 
 
@@ -271,6 +314,70 @@ def createNewBall(data, lastXPos):
                               data.height, data.margin)
     else:
         data.ball = Ball("green2", lastXPos, data.height, data.margin)
+
+
+def saveGame(data):
+    # write stuff to file with trailing newline
+    def writeToSavedGameFile(content):
+        data.savedGameFile.write(content+'\n')
+
+    print('Saving game......', end='')
+    # open saved game file for editing
+    data.savedGameFile = open('savedGame.py', 'w+')
+    # parse everything on board to string
+    parsedBoard = board.createEmptyBoard(data)
+    for row in range(len(data.board)):
+        for col in range(len(data.board[0])):
+            parsedBoard[row][col] = str(data.board[row][col])
+    writeToSavedGameFile('board = "%s"' % str(parsedBoard))
+    writeToSavedGameFile('ball = "%s"' % str(data.ball))
+    writeToSavedGameFile('ballCount = %d' % data.ballCount)
+    writeToSavedGameFile('remainingBalls = %d' % data.remainingBalls)
+    writeToSavedGameFile('shots = %d' % data.shots)
+    writeToSavedGameFile('paused = %s' % data.paused)
+    writeToSavedGameFile('difficulty = %d' % data.difficulty)
+    writeToSavedGameFile('score = %d' % data.score)
+    writeToSavedGameFile('timer = %d' % data.timer)
+    writeToSavedGameFile('username = "%s"' % data.username)
+    writeToSavedGameFile('url = "%s"' % data.url)
+    data.savedGameFile.close()
+    print('Game saved!')
+
+
+
+def getUserInput():
+    url = input("Enter your scoreboard server URL \n "
+                "(start with HTT/HTTPS and no trailing slashes. "
+                "LEAVE BLANK to use default): ")
+    if url == '':
+        url = "https://ballzzz.herokuapp.com"
+    usernameRegex = re.compile('^[a-zA-Z0-9._-]{4,50}$')
+    username = input("Enter your username: ")
+    while not usernameRegex.match(username):
+        print('\nInvalid username! \n'
+              'Your username should contain 4-50 characters, '
+              'with only letters and numbers.\n')
+        username = input("Enter your username: ")
+    return username, url
+
+
+def startNewGame(data):
+    # Ball object that stays on the bottom.
+    randomBallPos = random.randint(data.margin + 10,
+                                   data.width - data.margin - 10)
+    data.ball = Ball("green2", randomBallPos, data.height, data.margin)
+    # Where to display ball count depends on ball pos
+    data.ballCountPos = (data.ball.cx, data.ball.cy - data.ball.radius - 10)
+    # number of available balls; number of unreleased balls
+    data.ballCount, data.remainingBalls = 1, 1
+    # number of shots
+    data.shots = 0
+    # difficulty 1-9. 1=easy
+    data.difficulty = 1
+    data.score = 1
+    # current shot timer
+    data.timer = 0
+    data.paused = False
 
 
 ########################################################################
@@ -307,7 +414,7 @@ def run(width=300, height=300):
     data = Struct()
     data.width = width
     data.height = height
-    data.timerDelay = 15   # milliseconds (about 30fps)
+    data.timerDelay = 30   # milliseconds (about 30fps)
     root = Tk()
     init(data)
     """

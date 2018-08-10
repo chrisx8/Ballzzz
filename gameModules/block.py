@@ -4,7 +4,8 @@ from gameModules.ball import SuperBall
 
 
 class Block(object):
-    def __init__(self, row, col, margin, countBalls, difficulty):
+    def __init__(self, row, col, margin, countBalls=None,
+                 difficulty=None, number=None):
         colors = ('green2', 'hotPink', 'dodgerblue')
         self.dimension = 40
         self.margin = margin
@@ -12,7 +13,16 @@ class Block(object):
         self.col = col
         self.updatePos()
         self.color = random.choice(colors)
-        self.number = random.randint(countBalls, countBalls*3*difficulty)
+        if number is None:
+            self.number = random.randint(countBalls, countBalls*3*difficulty)
+        else:
+            self.number = number
+
+    # return a evaluable string for recreating the object
+    def __repr__(self):
+        return "%s(%d, %d, %d, number=%d)" % (type(self).__name__, self.row,
+                                              self.col, self.margin,
+                                              self.number)
 
     def updatePos(self):
         self.topLeft = (self.margin+self.col*self.dimension,
@@ -63,6 +73,11 @@ class Target(object):
         self.row = row
         self.col = col
         self.updatePos()
+
+    # return a evaluable string for recreating the object
+    def __repr__(self):
+        return "%s(%d, %d, %d)" % (type(self).__name__, self.margin,
+                                   self.row, self.col)
 
     def updatePos(self):
         self.cx = self.margin + self.col*self.dimension + self.dimension//2

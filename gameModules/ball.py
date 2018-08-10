@@ -15,6 +15,11 @@ class Ball(object):
         self.dy = 0
         self.speed = 5
 
+    # return a evaluable string for recreating the object
+    def __repr__(self):
+        return "%s('%s', %d, data.height, data.margin)" % (type(self).__name__,
+                                                           self.color, self.cx)
+
     def draw(self, canvas):
         canvas.create_oval(self.cx-self.radius, self.cy-self.radius,
                            self.cx+self.radius, self.cy+self.radius,

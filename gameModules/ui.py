@@ -5,7 +5,7 @@ def drawPaused(canvas, data):
     canvas.create_rectangle(0, data.height//2-40, data.width,
                             data.height//2+40, fill="purple", outline="")
     canvas.create_text(data.width//2, data.height//2, text="Paused",
-                       fill="White", font="Verdana 28 bold")
+                       fill="White", font=('Century Gothic', 30, 'bold'))
 
 
 def drawMargin(canvas, data):
@@ -40,7 +40,7 @@ def drawMargin(canvas, data):
                                text="Press A to speed up", fill="white")
     # draw current difficulty, restart and difficulty change instruction
     else:
-        if data.bottomScrollX <= -1.5*data.width:
+        if data.bottomScrollX <= -700:
             data.bottomScrollX = data.width
         else:
             data.bottomScrollX -= 3
@@ -48,8 +48,9 @@ def drawMargin(canvas, data):
                            text="Current Difficulty: %d                 "
                                 % data.difficulty +
                                 "Press D to increase difficulty          "
-                                "Press P to pause game          "
-                                "Press R to restart game", fill="white",
+                                "Press P to pause         "
+                                "Press R to restart         "
+                                "Press ESC to save and quit", fill="white",
                            anchor="w")
 
 
@@ -67,24 +68,28 @@ def drawStart(canvas, data):
     label = Label(image=img)
     label.image = img
     canvas.create_image(data.width//2, data.height//4, image=img)
-    # draw button
+    # warning
+    canvas.create_text(data.width//2, data.height//2+50, fill="white",
+                       text='"Draw a board" always creates a new game!',
+                       font=('Century Gothic', 12, 'bold'))
+    # draw board button
     canvas.create_rectangle(data.width//2-60, data.height//2+80,
                             data.width//2+60, data.height//2+120,
                             outline="", fill="turquoise4")
     canvas.create_text(data.width//2, data.height//2+100, fill="white",
-                       text="Draw a board", font="Verdana 12")
+                       text="Draw a board", font=('Century Gothic', 12, 'bold'))
     # play button
     canvas.create_rectangle(data.width//2-60, data.height//2+140,
                             data.width//2+60, data.height//2+180,
                             outline="", fill="green")
     canvas.create_text(data.width//2, data.height//2+160, fill="white",
-                       text="Play", font="Verdana 14")
+                       text="Play", font=('Century Gothic', 14, 'bold'))
     # Leaderboard button
     canvas.create_rectangle(data.width//2-60, data.height//2+200,
                             data.width//2+60, data.height//2+240,
                             outline="", fill="purple")
     canvas.create_text(data.width//2, data.height//2+220, fill="white",
-                       text="Leaderboard", font="Verdana 13")
+                       text="Leaderboard", font=('Century Gothic', 13, 'bold'))
 
 
 def drawGameOver(canvas, data):
@@ -96,44 +101,47 @@ def drawGameOver(canvas, data):
     http://effbot.org/pyfaq/why-do-my-tkinter-images-not-appear.htm
     """
     # logo
-    imgPath = data.assetPath + 'ballzzz.png'
-    img = PhotoImage(file=imgPath)
+    # imgPath =
+    img = PhotoImage(file=data.assetPath+'ballzzz.png')
     label = Label(image=img)
     label.image = img
     canvas.create_image(data.width//2, data.height//4, image=img)
     # game over
     canvas.create_text(data.width//2, data.height//2-40, text="Game Over",
-                       fill="gray90", font="Verdana 28 bold")
+                       fill="gray90", font=('Century Gothic', 28, 'bold'))
     # score
     canvas.create_text(data.width//2, data.height//2+20, fill="gray90",
-                       text="Score: ", font="Verdana 14", anchor='e')
+                       text="Score: ", font=('Century Gothic', 14, 'bold'),
+                       anchor='e')
     canvas.create_text(data.width//2, data.height//2+20, fill="white",
-                       font="Verdana 22 bold",
+                       font=('Century Gothic', 24, 'bold'),
                        text=str(data.score), anchor='w')
     # best score
     canvas.create_text(data.width//2, data.height//2+55, fill="gray90",
-                       text="Best Score: ", font="Verdana 14", anchor='e')
+                       text="Best Score: ", font=('Century Gothic', 14, 'bold'),
+                       anchor='e')
     canvas.create_text(data.width//2, data.height//2+55, fill="white",
-                       font="Verdana 22 bold",
+                       font=('Century Gothic', 22, 'bold'),
                        text=str(data.bestScore), anchor='w')
     # rank
     canvas.create_text(data.width//2, data.height//2+90, fill="gray90",
-                       text="Rank: ", font="Verdana 14", anchor='e')
+                       text="Rank: ", font=('Century Gothic', 14, 'bold'),
+                       anchor='e')
     canvas.create_text(data.width//2, data.height//2+90, fill="white",
-                       font="Verdana 22 bold",
+                       font=('Century Gothic', 24, 'bold'),
                        text=str(data.rank), anchor='w')
     # restart button
     canvas.create_rectangle(data.width//2-60, data.height//2+140,
                             data.width//2+60, data.height//2+180,
                             outline="", fill="green")
     canvas.create_text(data.width//2, data.height//2+160, fill="white",
-                       text="Restart", font="Verdana 14")
+                       text="Restart", font=('Century Gothic', 14, 'bold'))
     # exit button
     canvas.create_rectangle(data.width//2-60, data.height//2+200,
                             data.width//2+60, data.height//2+240,
                             outline="", fill="red4")
     canvas.create_text(data.width//2, data.height//2+220, fill="white",
-                       text="Exit", font="Verdana 14")
+                       text="Exit", font=('Century Gothic', 14, 'bold'))
 
 
 def drawLeaderboard(canvas, data):
@@ -152,26 +160,29 @@ def drawLeaderboard(canvas, data):
     canvas.create_image(data.width//2, 60, image=img)
     yPos = 150
     canvas.create_text(50, yPos, fill="white",
-                       text="Rank", anchor="n", font="Verdana 14 bold")
+                       text="Rank", anchor="n",
+                       font=('Century Gothic', 14, 'bold'))
     canvas.create_text(data.width // 2, yPos, fill="white",
-                       text="Username", anchor="n", font="Verdana 14 bold")
+                       text="Username", anchor="n",
+                       font=('Century Gothic', 14, 'bold'))
     canvas.create_text(data.width-50, yPos, fill="white",
-                       text="Score", anchor="n", font="Verdana 14 bold")
+                       text="Score", anchor="n",
+                       font=('Century Gothic', 14, 'bold'))
     yPos += 30
     for entry in data.topTen:
         canvas.create_text(50, yPos, fill="white",
                            text=data.topTen[entry]['ranking'], anchor="n",
-                           font="Verdana 12")
+                           font=('Century Gothic', 12))
         canvas.create_text(data.width//2, yPos, fill="white",
                            text=data.topTen[entry]['username'], anchor="n",
-                           font="Verdana 12")
+                           font=('Century Gothic', 12))
         canvas.create_text(data.width-50, yPos, fill="white",
                            text=data.topTen[entry]['score'], anchor="n",
-                           font="Verdana 12")
+                           font=('Century Gothic', 12))
         yPos += 25
     # back button
     canvas.create_rectangle(data.width//2-60, data.height//2+200,
                             data.width//2+60, data.height//2+240,
                             outline="", fill="red4")
     canvas.create_text(data.width//2, data.height//2+220, fill="white",
-                       text="Back", font="Verdana 14")
+                       text="Back", font=('Century Gothic', 14, 'bold'))
