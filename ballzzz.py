@@ -401,7 +401,7 @@ def saveGame(data):
 
 def getUserInput():
     url = input("Enter your scoreboard server URL \n "
-                "(start with HTT/HTTPS and no trailing slashes. "
+                "(start with HTTP/HTTPS and no trailing slashes. "
                 "LEAVE BLANK to use default): ")
     # blank for default
     if url == '':
