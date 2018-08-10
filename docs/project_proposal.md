@@ -43,8 +43,7 @@ When the game ends, scores are automatically sent to a server. Player can see th
 - [x] Store game state
 - [x] Difficulty selection
 - [x] Increased difficulty when score is a multiple of 50
-- [ ] Players can customize the color of the ball.
-- [ ] [HARD] A "cheat mode" that finds the best way to make the current move.
+- [x] Players can customize the color of the ball.
 
 ### Definitions
 

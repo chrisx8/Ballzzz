@@ -87,23 +87,19 @@ def init(data):
         data.username = savedGame.username
         data.url = savedGame.url
     # start as new game if saved game doesn't exist
-    except:
-        startNewGame(data)
-    # Define api connection
-    try:
-        # try to read username and url
-        data.username, data.url
+    except: startNewGame(data)
+    # try to read username and url
+    try: data.username, data.url
     # if url and username aren't defined, get from console
-    except AttributeError:
-        data.username, data.url = getUserInput()
-    # customized colors
-    data.ball.color = data.ballColor
+    except AttributeError: data.username, data.url = getUserInput()
+    # # customized colors
+    # data.ball.color = data.ballColor
     # Where to display ball count depends on ball pos
     data.ballCountPos = (data.ball.cx, data.ball.cy - data.ball.radius - 10)
+    # Define api connection
     data.api = API(data.username, data.url)
 
 
-# TODO: OPTIMIZE
 def mousePressed(event, data):
     # mouse navigation on game over screen, and ignore rest
     # drawboard button
@@ -188,7 +184,6 @@ def mousePressed(event, data):
             ball.move(angle, 2)
 
 
-# TODO: OPTIMIZE
 def keyPressed(event, data):
     # when paused, press any key to resume game and ignore rest
     if data.paused:
@@ -420,6 +415,42 @@ def getUserInput():
               'with only letters and numbers.\n')
         username = input("Enter your username: ")
     return username, url
+
+
+def loadGame(data):
+    import savedGame
+    """
+    Explicitly reload an imported module
+    https://emacs.stackexchange.com/questions/13476/how-to-force-a-python-
+        shell-to-re-import-modules-when-running-a-buffer
+    """
+    import importlib
+    importlib.reload(savedGame)
+    # load ball
+    data.ball = eval(savedGame.ball)
+    # load board
+    data.board = eval(savedGame.board)
+    # eval everything in board
+    tempBoard = eval(savedGame.board)
+    data.board = board.createEmptyBoard(data)
+    # eval everything in board
+    for row in range(len(tempBoard)):
+        for col in range(len(tempBoard[0])):
+            data.board[row][col] = eval(tempBoard[row][col])
+    # number of available balls; number of unreleased balls
+    data.ballCount = savedGame.ballCount
+    data.remainingBalls = savedGame.remainingBalls
+    # number of shots
+    data.shots = savedGame.shots
+    # difficulty 1-9. 1=easy
+    data.difficulty = savedGame.difficulty
+    data.score = savedGame.score
+    # current shot timer
+    data.timer = savedGame.timer
+    data.paused = savedGame.paused
+    # load username and url
+    data.username = savedGame.username
+    data.url = savedGame.url
 
 
 def startNewGame(data):

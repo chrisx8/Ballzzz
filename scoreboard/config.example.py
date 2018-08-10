@@ -1,6 +1,6 @@
 # DO NOT CHANGE THESE
 from common import create_session_key
-from wsgi import app
+import os
 SECRET_KEY=create_session_key(50)
 
 # Database Connection
