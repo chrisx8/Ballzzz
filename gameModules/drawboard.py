@@ -97,8 +97,8 @@ def drawMargin(canvas, data):
 
 # check if current mouse pos is in margin
 def mouseInMargin(mouseX, mouseY, data):
-    return data.margin <= mouseX <= data.width - data.margin and \
-           data.margin <= mouseY <= data.height - data.margin
+    return 2*data.margin <= mouseX <= data.width - 2*data.margin and \
+           2 *data.margin <= mouseY <= data.height - 2*data.margin
 
 
 ########################################################################

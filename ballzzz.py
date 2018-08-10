@@ -2,8 +2,8 @@ import copy
 import math
 import os
 import random
+import string
 from tkinter import *
-from tkinter import messagebox
 
 from gameModules import board
 from gameModules import drawboard
@@ -37,12 +37,20 @@ def init(data):
     # Scoring and game state
     data.startGame, data.gameOver = False, False
     data.drawLeaderboard = False
+    data.drawCustomizations = False
+    data.ballColorBoxSelected = False
+    data.superBallColorBoxSelected = False
     data.bestScore = None
     data.rank = None
     # points of the user-drawn pattern
     data.segments = set()
     # X pos for bottom margin scroll text
     data.bottomScrollX = data.width
+    # try to get user-defined color. default to green2 if it doesn't exist
+    try: data.ballColor
+    except: data.ballColor = "green2"
+    data.superBallColor = "hotPink"
+    data.allowSaveCustomization = True
     # try to load saved game
     try:
         import savedGame
@@ -88,6 +96,8 @@ def init(data):
     # if url and username aren't defined, get from console
     except AttributeError:
         data.username, data.url = getUserInput()
+    # customized colors
+    data.ball.color = data.ballColor
     # Where to display ball count depends on ball pos
     data.ballCountPos = (data.ball.cx, data.ball.cy - data.ball.radius - 10)
     data.api = API(data.username, data.url)
@@ -99,17 +109,38 @@ def mousePressed(event, data):
     # drawboard button
     if data.width // 2 - 60 <= event.x <= data.width // 2 + 60 and \
             data.height // 2 + 80 <= event.y <= data.height // 2 + 120 and \
+            not data.drawCustomizations and \
             not data.drawLeaderboard and not data.startGame:
-        # hide random tkinter errors that doesn't affect the game
-        try:
-            # open drawboard
-            drawboard.run(data)
-        except:
-            pass
+        # open drawboard
+        print('Please ignore Tkinter errors, as they don\'t affect the '
+              'functionality of the game.')
+        drawboard.run(data)
         return
+    # settings button
+    if data.width // 2 - 20 <= event.x <= data.width // 2 + 20 and \
+            data.height // 2 + 250 <= event.y <= data.height // 2 + 290 and \
+            not data.drawCustomizations and not data.startGame:
+        data.drawCustomizations = True
+        return
+    if data.drawCustomizations:
+        # click in ball color box to activate input
+        # deactivate the other text box
+        if 70 < event.x < data.width - 70 and 260 < event.y < 300:
+            data.ballColorBoxSelected = True
+            data.superBallColorBoxSelected = False
+        # click in super ball color box to activate input
+        # deactivate the other text box
+        elif 70 < event.x < data.width - 70 and 360 < event.y < 400:
+            data.superBallColorBoxSelected = True
+            data.ballColorBoxSelected = False
+        # click outside the text boxes to deactivate all
+        else:
+            data.ballColorBoxSelected = False
+            data.superBallColorBoxSelected = False
     # play/restart button
     if data.width//2-60 <= event.x <= data.width//2+60 and \
             data.height//2+140 <= event.y <= data.height//2+180 and \
+            not data.drawCustomizations and \
             not data.drawLeaderboard and (data.gameOver or not data.startGame):
         if not data.startGame and len(data.segments) != 0:
                 # create a board from drawing
@@ -121,11 +152,14 @@ def mousePressed(event, data):
             board.createRandomBoard(data)
         data.startGame = True
         return
-    # leaderboard/exit button
+    # leaderboard (start screen)/exit (game over)/save (settings) button
     if data.width//2-60 <= event.x <= data.width//2+60 and \
             data.height//2+200 <= event.y <= data.height//2+240:
         if data.drawLeaderboard:
             data.drawLeaderboard = False
+        elif data.drawCustomizations and data.allowSaveCustomization:
+            data.drawCustomizations = False
+            data.ball.color = data.ballColor
         elif not data.startGame:
             data.topTen = data.api.getTopTen()['response']
             data.drawLeaderboard = True
@@ -161,6 +195,23 @@ def keyPressed(event, data):
         data.bottomScrollX = data.width
         data.paused = False
         return
+    # in settings, accept input
+    if data.drawCustomizations:
+        if data.ballColorBoxSelected:
+            # allow letters and numbers
+            if event.keysym in string.ascii_lowercase+string.digits:
+                data.ballColor += event.keysym
+            # backspace to delete one character
+            if event.keysym == "BackSpace":
+                data.ballColor = data.ballColor[:len(data.ballColor)-1]
+        elif data.superBallColorBoxSelected:
+            # allow letters and numbers
+            if event.keysym in string.ascii_lowercase+string.digits:
+                data.superBallColor += event.keysym
+            # backspace to delete one character
+            if event.keysym == "BackSpace":
+                data.superBallColor = \
+                    data.superBallColor[:len(data.superBallColor)-1]
     # only check when playing
     if data.startGame and not data.gameOver and not data.paused:
         # press ESC to go home when there's no moving balls
@@ -207,6 +258,10 @@ def timerFired(data):
 
 
 def redrawAll(canvas, data):
+    # draw customizations page
+    if data.drawCustomizations:
+        ui.drawCustomizations(canvas, data)
+        return
     # draw leaderboard
     if data.drawLeaderboard:
         ui.drawLeaderboard(canvas, data)
@@ -314,10 +369,10 @@ def createNewBall(data, lastXPos):
     if not isinstance(data.ball, SuperBall) and \
             (averageHitsPerBall > 10 or
              (data.shots % 10 == 0 and data.difficulty == 1)):
-        data.ball = SuperBall("hotPink", lastXPos,
+        data.ball = SuperBall(data.superBallColor, lastXPos,
                               data.height, data.margin)
     else:
-        data.ball = Ball("green2", lastXPos, data.height, data.margin)
+        data.ball = Ball(data.ballColor, lastXPos, data.height, data.margin)
 
 
 def saveGame(data):
@@ -353,10 +408,12 @@ def getUserInput():
     url = input("Enter your scoreboard server URL \n "
                 "(start with HTT/HTTPS and no trailing slashes. "
                 "LEAVE BLANK to use default): ")
+    # blank for default
     if url == '':
         url = "https://ballzzz.herokuapp.com"
     usernameRegex = re.compile('^[a-zA-Z0-9._-]{4,50}$')
     username = input("Enter your username: ")
+    # validate username
     while not usernameRegex.match(username):
         print('\nInvalid username! \n'
               'Your username should contain 4-50 characters, '
@@ -369,7 +426,7 @@ def startNewGame(data):
     # Ball object that stays on the bottom.
     randomBallPos = random.randint(data.margin + 10,
                                    data.width - data.margin - 10)
-    data.ball = Ball("green2", randomBallPos, data.height, data.margin)
+    data.ball = Ball(data.ballColor, randomBallPos, data.height, data.margin)
     # Where to display ball count depends on ball pos
     data.ballCountPos = (data.ball.cx, data.ball.cy - data.ball.radius - 10)
     # number of available balls; number of unreleased balls
@@ -382,6 +439,8 @@ def startNewGame(data):
     # current shot timer
     data.timer = 0
     data.paused = False
+    # create a new random board
+    board.createRandomBoard(data)
 
 
 ########################################################################

@@ -90,6 +90,12 @@ def drawStart(canvas, data):
                             outline="", fill="purple")
     canvas.create_text(data.width//2, data.height//2+220, fill="white",
                        text="Leaderboard", font=('Century Gothic', 13, 'bold'))
+    # cog button
+    imgPath = data.assetPath + 'cog.png'
+    cog = PhotoImage(file=imgPath)
+    label = Label(image=cog)
+    label.image = cog
+    canvas.create_image(data.width//2, data.height//2+270, image=cog)
 
 
 def drawGameOver(canvas, data):
@@ -186,3 +192,80 @@ def drawLeaderboard(canvas, data):
                             outline="", fill="red4")
     canvas.create_text(data.width//2, data.height//2+220, fill="white",
                        text="Back", font=('Century Gothic', 14, 'bold'))
+
+
+def drawCustomizations(canvas, data):
+    canvas.create_rectangle(0, 0, data.width, data.height, fill="gray25")
+    """
+    Displaying image in Tkinter
+    https://stackoverflow.com/questions/35024118/
+        how-to-load-an-image-into-a-python-3-4-tkinter-window
+    http://effbot.org/pyfaq/why-do-my-tkinter-images-not-appear.htm
+    """
+    # logo
+    imgPath = data.assetPath + 'ballzzz.png'
+    img = PhotoImage(file=imgPath)
+    label = Label(image=img)
+    label.image = img
+    canvas.create_image(data.width//2, 60, image=img)
+    canvas.create_text(data.width//2, 170, fill="white",
+                       text="Customizations",
+                       font=('Century Gothic', 24, 'bold'))
+    # text box for ball color
+    canvas.create_text(70, 240, fill="white",
+                       text="Ball color", anchor='w',
+                       font=('Century Gothic', 14, 'bold'))
+    if data.ballColorBoxSelected:
+        canvas.create_rectangle(70, 260, data.width-70, 300, fill="gray90")
+    else:
+        canvas.create_rectangle(70, 260, data.width-70, 300, fill="gray70")
+    # text in box
+    # check if color is legal
+    try:
+        canvas.create_text(data.width//2, 280, fill=data.ballColor,
+                           text=data.ballColor, font=('Century Gothic', 14))
+    except:
+        # if not, disable save and show error
+        canvas.create_text(data.width//2, 280, fill="red",
+                           text=data.ballColor, font=('Century Gothic', 14))
+        canvas.create_text(data.width//2, 310, fill="red",
+                           text="Color doesn't exist!",
+                           font=('Century Gothic', 12, 'bold'))
+        data.allowSaveCustomization = False
+    # text box for super ball color
+    canvas.create_text(70, 340, fill="white",
+                       text="Super Ball color", anchor='w',
+                       font=('Century Gothic', 14, 'bold'))
+    if data.superBallColorBoxSelected:
+        canvas.create_rectangle(70, 360, data.width-70, 400, fill="gray90")
+    else:
+        canvas.create_rectangle(70, 360, data.width-70, 400, fill="gray70")
+    # text in box
+    # check if color is legal
+    try:
+        canvas.create_text(data.width//2, 380, fill=data.superBallColor,
+                           text=data.superBallColor,
+                           font=('Century Gothic', 14))
+    # if not, disable save and show error
+    except:
+        canvas.create_text(data.width//2, 380, fill="red",
+                           text=data.superBallColor,
+                           font=('Century Gothic', 14))
+        canvas.create_text(data.width//2, 410, fill="red",
+                           text="Color doesn't exist!",
+                           font=('Century Gothic', 12, 'bold'))
+        data.allowSaveCustomization = False
+    # when save is disabled, create dummy text to test if color becomes legal
+    while not data.allowSaveCustomization:
+        try:
+            canvas.create_text(0, 0, fill=data.ballColor)
+            canvas.create_text(0, 0, fill=data.superBallColor)
+            data.allowSaveCustomization = True
+        except: break
+    if data.allowSaveCustomization:
+        # save button
+        canvas.create_rectangle(data.width//2-60, data.height//2+200,
+                                data.width//2+60, data.height//2+240,
+                                outline="", fill="green")
+    canvas.create_text(data.width//2, data.height//2+220, fill="white",
+                       text="Save", font=('Century Gothic', 14, 'bold'))

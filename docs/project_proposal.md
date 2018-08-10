@@ -33,19 +33,17 @@ When the game ends, scores are automatically sent to a server. Player can see th
 
 **Since Ballzzz is simply Ballz on steroids, other more complicated features will (probablyy) be implemented**:
 
-- [x] [EASY] After the game is over, scores are sent to a server, and rankings are displayed on the game-over screen.
-- [x] [EASY] Players can see the top scores on a webpage hosted on the same server.
-- [x] [EASY] Players can see the top ten scores in the game.
-- [x] [EASY] A "Super Ball" ([definition](#super-ball)) is awarded when one of these conditions are met:
+- [x] After the game is over, scores are sent to a server, and rankings are displayed on the game-over screen.
+- [x] Players can see the top scores on a webpage hosted on the same server.
+- [x] Players can see the top ten scores in the game.
+- [x] A "Super Ball" ([definition](#super-ball)) is awarded when one of these conditions are met:
   - [x] Every 10 shots (only in Easy mode)
   - [x] Average hits per ball ([definition](#average-hits-per-ball)) of a shot is greater than 10
-- [x] [MEDIUM] Generate board based on a shape that the player draws
-- [x] [MEDIUM] Store game state
-- [x] [MEDIUM] Difficulty selection
-- [x] [MEDIUM] Increased difficulty when score is a multiple of 50
-- [ ] [EASY] Players can customize the look of the ball.
-- [ ] [HARD] Multiplayer mode. Two players shoot from opposite sides of the board.
-- [ ] [HARD] The balls can bounce off of each other
+- [x] Generate board based on a shape that the player draws
+- [x] Store game state
+- [x] Difficulty selection
+- [x] Increased difficulty when score is a multiple of 50
+- [ ] Players can customize the color of the ball.
 - [ ] [HARD] A "cheat mode" that finds the best way to make the current move.
 
 ### Definitions

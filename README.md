@@ -15,7 +15,6 @@ The entire project is available on [GitHub](https://github.com/chrisx8/Ballzzz/)
 
 - Download these files from the root directory
   - `ballzzz.py`
-  - `ballzzz_icon.ico`
   - `requirements.txt`
 - Download everything in `gameModules/` and everything in `assets/`
 - Install `requests` using `pip`:
@@ -31,12 +30,13 @@ The entire project is available on [GitHub](https://github.com/chrisx8/Ballzzz/)
 ### Changes since TP2
 
 - Player can draw a pattern on the drawboard, and the game board will be generated based on what the player draws.
-- Fixed a bug where player pattern parsing may result in list-out-of-range error.
+- Fixed a bug where player pattern parsing may result in list out-of-bound error.
 - Fixed a bug where a SuperBall can clear the entire board due to insufficient type checking.
 - Implemented leaderboard, which shows the top ten players.
 - Player can save the game and return to the main menu by pressing ESC.
 - Player can restore a previous game, if `savedGame.py` exists and is legal.
-- Some minor UI improvements.
+- Player can customize color of the ball or the super ball.
+- Many UI improvements.
  
 ### Changes since TP1
 
