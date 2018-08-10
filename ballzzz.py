@@ -100,21 +100,25 @@ def mousePressed(event, data):
     if data.width // 2 - 60 <= event.x <= data.width // 2 + 60 and \
             data.height // 2 + 80 <= event.y <= data.height // 2 + 120 and \
             not data.drawLeaderboard and not data.startGame:
-        # open drawboard
-        drawboard.run(data)
+        # hide random tkinter errors that doesn't affect the game
+        try:
+            # open drawboard
+            drawboard.run(data)
+        except:
+            pass
         return
     # play/restart button
     if data.width//2-60 <= event.x <= data.width//2+60 and \
             data.height//2+140 <= event.y <= data.height//2+180 and \
             not data.drawLeaderboard and (data.gameOver or not data.startGame):
+        if not data.startGame and len(data.segments) != 0:
+                # create a board from drawing
+                startNewGame(data)
+                board.createBoardFromDrawing(data)
         if data.gameOver:
             init(data)
-            # create a board from drawing
-            if len(data.segments) != 0:
-                board.createBoardFromDrawing(data)
-            else:
-                # create random board
-                board.createRandomBoard(data)
+            # create random board
+            board.createRandomBoard(data)
         data.startGame = True
         return
     # leaderboard/exit button

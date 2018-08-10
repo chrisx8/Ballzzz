@@ -35,7 +35,7 @@ The entire project is available on [GitHub](https://github.com/chrisx8/Ballzzz/)
 - Fixed a bug where a SuperBall can clear the entire board due to insufficient type checking.
 - Implemented leaderboard, which shows the top ten players.
 - Player can save the game and return to the main menu by pressing ESC.
-- 
+- Player can restore a previous game, if `savedGame.py` exists and is legal.
 - Some minor UI improvements.
  
 ### Changes since TP1

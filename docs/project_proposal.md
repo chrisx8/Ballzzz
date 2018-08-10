@@ -43,6 +43,7 @@ When the game ends, scores are automatically sent to a server. Player can see th
 - [x] [MEDIUM] Store game state
 - [x] [MEDIUM] Difficulty selection
 - [x] [MEDIUM] Increased difficulty when score is a multiple of 50
+- [ ] [EASY] Players can customize the look of the ball.
 - [ ] [HARD] Multiplayer mode. Two players shoot from opposite sides of the board.
 - [ ] [HARD] The balls can bounce off of each other
 - [ ] [HARD] A "cheat mode" that finds the best way to make the current move.
