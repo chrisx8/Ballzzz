@@ -113,14 +113,6 @@ Ballzzz
 - The direction of movement is processed as quadrants
 - When collision happens, quadrant changes. For example, when a ball moving in an angle of pi/4 (Quadrant 1) hits the right border, it'll continue to move in an angle of 3*pi/4 (Quadrant 2)
 
-### Pathfinding: Dijkstra's algorithm
-
-- Cited from the [Wikipedia page for Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
-- Begins with a "starting node" and an open set of candidate nodes (blocks in my case).
-- At each step, the node in the open set with the lowest distance from the start is examined. The node is marked "closed", and all nodes adjacent to it are added to the open set if they have not already been examined.
-- This process repeats until a path to the destination has been found. Since the lowest distance nodes are examined first, the first time the destination is found, the path to it will be the shortest path.
-- In Ballzzz, the algorithm will be used to find the most optimal shot (largest average hits per ball) by mapping out possibilities of possible bounces and find the most optimal one.
-
 ## Timeline Plan
 
 ### TP1 (Sunday, 8/5/2018)
@@ -137,4 +129,4 @@ Integrate web service, add sound effects, build a more intuitive UX with mouse-n
 
 ## Version Control Plan
 
-I'm using Git for version coltrolling for the entire project. All project codes and assets will be available on [GitHub](https://github.com/chrisx8/Ballzzz/).
+I'm using Git for version coltrolling for the entire project. All project codes and assets will be available on [GitHub](https://github.com/chrisx8/Ballzzz).
