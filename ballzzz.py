@@ -405,7 +405,7 @@ def getUserInput():
                 "LEAVE BLANK to use default): ")
     # blank for default
     if url == '':
-        url = "https://ballzzz.herokuapp.com"
+        url = "https://ballzzz.chrisx.tk"
     usernameRegex = re.compile('^[a-zA-Z0-9._-]{4,50}$')
     username = input("Enter your username: ")
     # validate username
