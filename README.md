@@ -2,11 +2,11 @@
 
 A CMU 15-112 Term Project.
 
-The entire project is hosted on [GitHub](https://github.com/chrisx8/Ballzzz/) and [Heroku](https://ballzzz.herokuapp.com).
+The entire project is hosted on [GitHub](https://github.com/chrisx8/Ballzzz/) and [my web server](https://ballzzz.chrisx.tk).
 
 ## Video
 
-[![Ballzzz](https://i9.ytimg.com/vi/Y8HDjImdkik/mqdefault.jpg?sqp=CJTZ5t8F&rs=AOn4CLAhJDYBYe9KDFDrnrO68AoMnZV66Q&time=1543089462938)](https://www.youtube.com/watch?v=Y8HDjImdkik)
+[Watch on YouTube](https://www.youtube.com/watch?v=Y8HDjImdkik)
 
 ## Design Proposal
 
