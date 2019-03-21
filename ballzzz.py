@@ -521,7 +521,7 @@ def run(width=300, height=300):
     Change Tkinter window icon
     cited from https://stackoverflow.com/questions/18537918/set-window-icon
     """
-    root.iconbitmap(data.assetPath + 'ballzzz_icon.ico')
+    root.iconphoto(True, PhotoImage(file=data.assetPath + 'ballzzz_icon.gif'))
     # create the root and the canvas
     canvas = Canvas(root, width=data.width, height=data.height)
     canvas.configure(bd=0, highlightthickness=0)

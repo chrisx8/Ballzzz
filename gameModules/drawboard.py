@@ -150,12 +150,6 @@ def run(data):
                 using-tkinter-in-python-to-edit-the-title-bar
     """
     root.title("Ballzzz Drawboard")
-    """
-    Change Tkinter window icon
-    cited from https://stackoverflow.com/questions/18537918/set-window-icon
-    """
-    # get asset path from call
-    root.iconbitmap(data.assetPath + 'ballzzz_icon.ico')
     # create the root and the canvas
     canvas = Canvas(root, width=data.width, height=data.height)
     canvas.configure(bd=0, highlightthickness=0)
