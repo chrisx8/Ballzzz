@@ -2,7 +2,7 @@
 
 A CMU 15-112 Term Project.
 
-The entire project is hosted on [GitHub](https://github.com/chrisx8/Ballzzz/) and [my web server](https://ballzzz.chrisx.tk).
+Visit the project site and scoreboard [here](https://ballzzz.chrisx.xyz).
 
 ## Video
 
@@ -17,11 +17,8 @@ The entire project is hosted on [GitHub](https://github.com/chrisx8/Ballzzz/) an
 
 **All files listed in this section are REQUIRED to run the game.**
 
-- Download these files from the root directory
-  - `ballzzz.py`
-  - `requirements.txt`
-- Download everything in `gameModules/` and everything in `assets/`
-- Install `requests` using `pip`:
+- [Download ZIP](https://github.com/chrisx8/Ballzzz/archive/master.zip)
+- Install dependencies using `pip`:
 
   ```bash
   pip install -r requirements.txt

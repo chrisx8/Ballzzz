@@ -1,8 +1,11 @@
+import os
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import config
+
+# Get database URL from system env
+DB_URL = os.environ.get('DATABASE_URL')
 
 Base = declarative_base()
 
@@ -14,7 +17,7 @@ class Scoreboard(Base):
     score = Column(Integer, nullable=False)
 
 # Create DB connection
-engine = create_engine(config.DATABASE_URL)
+engine = create_engine(DB_URL)
 
 # Create DB and and tables
 Base.metadata.create_all(engine)

@@ -1,8 +1,8 @@
 import os
 import api
-import config
 from flask import Flask
 from flask_restful import Api
+from common import create_session_key
 from views import views
 
 # create the webapp and api instances
@@ -11,7 +11,7 @@ app_api = Api(app)
 
 # load the instance config
 app.config.from_mapping(
-    SECRET_KEY=config.SECRET_KEY
+    SECRET_KEY=create_session_key(50)
 )
 
 # add api resources
