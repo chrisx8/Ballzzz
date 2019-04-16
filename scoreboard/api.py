@@ -23,7 +23,7 @@ class PublishScore(Resource):
     def get(self):
         top_ten = dict()
         # find all users, sorted by score
-        board = DBSession.query(Scoreboard).order_by("score desc").all()
+        board = DBSession.query(Scoreboard).order_by(Scoreboard.score.desc()).all()
         # find top five users if there's more than 5 users
         if len(board) > 10:
             for i in range(10):
@@ -56,7 +56,7 @@ class PublishScore(Resource):
         # Commit change to DB
         DBSession.commit()
         # Find current ranking
-        board = DBSession.query(Scoreboard).order_by("score desc").all()
+        board = DBSession.query(Scoreboard).order_by(Scoreboard.score.desc()).all()
         # find index of user
         index = board.index(user_data)
         # close DB session

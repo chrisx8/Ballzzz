@@ -12,7 +12,7 @@ def home():
 # Scoreboard page
 @views.route('/scoreboard/')
 def scoreboard():
-    board = DBSession.query(Scoreboard).order_by("score desc").all()
+    board = DBSession.query(Scoreboard).order_by(Scoreboard.score.desc()).all()
     rankings = get_rankings(board)
     return render_template('scoreboard.html', scoreboard=board,
                            count=len(board), rankings=rankings)
