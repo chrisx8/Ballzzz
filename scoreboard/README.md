@@ -1,5 +1,7 @@
 # Ballzzz Scoreboard
 
+[![Build Status](https://travis-ci.com/chrisx8/Ballzzz.svg?branch=master)](https://travis-ci.com/chrisx8/Ballzzz)
+
 This folder contains the scoreboard webapp for Ballzzz.
 
 ## Configure game to use a our server
