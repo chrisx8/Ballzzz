@@ -84,12 +84,14 @@ def drawStart(canvas, data):
                             outline="", fill="green")
     canvas.create_text(data.width//2, data.height//2+160, fill="white",
                        text="Play", font=('Century Gothic', 14, 'bold'))
+    if data.api:
     # Leaderboard button
-    canvas.create_rectangle(data.width//2-60, data.height//2+200,
-                            data.width//2+60, data.height//2+240,
-                            outline="", fill="purple")
-    canvas.create_text(data.width//2, data.height//2+220, fill="white",
-                       text="Leaderboard", font=('Century Gothic', 13, 'bold'))
+        canvas.create_rectangle(data.width//2-60, data.height//2+200,
+                                data.width//2+60, data.height//2+240,
+                                outline="", fill="purple")
+        canvas.create_text(data.width//2, data.height//2+220, fill="white",
+                        text="Leaderboard", font=('Century Gothic', 
+                        13, 'bold'))
     # cog button
     imgPath = data.assetPath + 'cog.png'
     cog = PhotoImage(file=imgPath)
@@ -107,7 +109,6 @@ def drawGameOver(canvas, data):
     http://effbot.org/pyfaq/why-do-my-tkinter-images-not-appear.htm
     """
     # logo
-    # imgPath =
     img = PhotoImage(file=data.assetPath+'ballzzz.png')
     label = Label(image=img)
     label.image = img
@@ -122,20 +123,21 @@ def drawGameOver(canvas, data):
     canvas.create_text(data.width//2, data.height//2+20, fill="white",
                        font=('Century Gothic', 24, 'bold'),
                        text=str(data.score), anchor='w')
-    # best score
-    canvas.create_text(data.width//2, data.height//2+55, fill="gray90",
-                       text="Best Score: ", font=('Century Gothic', 14, 'bold'),
-                       anchor='e')
-    canvas.create_text(data.width//2, data.height//2+55, fill="white",
-                       font=('Century Gothic', 22, 'bold'),
-                       text=str(data.bestScore), anchor='w')
-    # rank
-    canvas.create_text(data.width//2, data.height//2+90, fill="gray90",
-                       text="Rank: ", font=('Century Gothic', 14, 'bold'),
-                       anchor='e')
-    canvas.create_text(data.width//2, data.height//2+90, fill="white",
-                       font=('Century Gothic', 24, 'bold'),
-                       text=str(data.rank), anchor='w')
+    if data.api:
+        # best score
+        canvas.create_text(data.width//2, data.height//2+55, fill="gray90",
+                        text="Best Score: ", font=('Century Gothic', 14, 
+                        'bold'), anchor='e')
+        canvas.create_text(data.width//2, data.height//2+55, fill="white",
+                        font=('Century Gothic', 22, 'bold'),
+                        text=str(data.bestScore), anchor='w')
+        # rank
+        canvas.create_text(data.width//2, data.height//2+90, fill="gray90",
+                        text="Rank: ", font=('Century Gothic', 14, 'bold'),
+                        anchor='e')
+        canvas.create_text(data.width//2, data.height//2+90, fill="white",
+                        font=('Century Gothic', 24, 'bold'),
+                        text=str(data.rank), anchor='w')
     # restart button
     canvas.create_rectangle(data.width//2-60, data.height//2+140,
                             data.width//2+60, data.height//2+180,

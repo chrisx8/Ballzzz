@@ -97,7 +97,10 @@ def init(data):
     # Where to display ball count depends on ball pos
     data.ballCountPos = (data.ball.cx, data.ball.cy - data.ball.radius - 10)
     # Define api connection
-    data.api = API(data.username, data.url)
+    if data.username and data.url:
+        data.api = API(data.username, data.url)
+    else:
+        data.api = None
 
 
 def mousePressed(event, data):
@@ -156,7 +159,7 @@ def mousePressed(event, data):
         elif data.drawCustomizations and data.allowSaveCustomization:
             data.drawCustomizations = False
             data.ball.color = data.ballColor
-        elif not data.startGame:
+        elif not data.startGame and data.api:
             data.topTen = data.api.getTopTen()['response']
             data.drawLeaderboard = True
         elif data.gameOver:
@@ -239,9 +242,10 @@ def timerFired(data):
     for cell in data.board[len(data.board)-1]:
         if isinstance(cell, Block):
             data.gameOver = True
-            apiResp = data.api.uploadScore(data.score)
-            data.rank = apiResp['ranking']
-            data.bestScore = apiResp['score']
+            if data.api:
+                apiResp = data.api.uploadScore(data.score)
+                data.rank = apiResp['ranking']
+                data.bestScore = apiResp['score']
     # update ball movement
     for ball in data.movingBalls:
         if isinstance(ball, Ball):
@@ -402,10 +406,10 @@ def saveGame(data):
 def getUserInput():
     url = input("Enter your scoreboard server URL \n "
                 "(start with HTTP/HTTPS and no trailing slashes. "
-                "LEAVE BLANK to use default): ")
-    # blank for default
+                "LEAVE BLANK to disable scoreboard): ")
+    # blank for disabled
     if url == '':
-        url = "https://ballzzz.chrisx.xyz"
+        return None, None
     usernameRegex = re.compile('^[a-zA-Z0-9._-]{4,50}$')
     username = input("Enter your username: ")
     # validate username
