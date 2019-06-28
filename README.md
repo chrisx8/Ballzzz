@@ -2,8 +2,6 @@
 
 A CMU 15-112 Term Project.
 
-Visit the project site and scoreboard [here](https://ballzzz.chrisx.xyz).
-
 ## Video
 
 [Watch on YouTube](https://www.youtube.com/watch?v=Y8HDjImdkik)
@@ -25,3 +23,7 @@ Visit the project site and scoreboard [here](https://ballzzz.chrisx.xyz).
   ```
 
 - Run `ballzzz.py`
+
+## Scoreboard
+
+See scoreboard documentation [here](scoreboard/README.md).
