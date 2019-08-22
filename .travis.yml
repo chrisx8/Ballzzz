@@ -3,16 +3,16 @@ sudo: required
 language: python
 python:
   - "3.6"
-cache: pip
-env: DATABASE_URL=sqlite:///site.db
-install:
-  - pip install -r requirements.txt
-  - cp $HOME/.cache/pip/site.db site.db | true
-script:
-  - gunicorn wsgi:app
-  - cp site.db $HOME/.cache/pip/site.db
 jobs:
   include:
+    - stage: test
+      cache: pip
+      env: DATABASE_URL=sqlite:///site.db
+      install:
+        - pip install -r scoreboard/requirements.txt
+      script:
+        - cd scoreboard/
+        - gunicorn wsgi:app &
     - stage: build docker image
       if: branch = master
       env: DOCKER_REPO=chrisx8/ballzzz-scoreboard:latest
