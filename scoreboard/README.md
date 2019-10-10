@@ -53,5 +53,5 @@ pip install -r requirements.txt
 # Run server
 # Specify your database URL here
 # Change 0.0.0.0:8000 to whatever you want your server to listen at
-DATABASE_URL = 'YOUR_DATABASE_URL' gunicorn wsgi:app -b 0.0.0.0:8000
+DATABASE_URL='YOUR_DATABASE_URL' gunicorn wsgi:app -b 0.0.0.0:8000
 ```
