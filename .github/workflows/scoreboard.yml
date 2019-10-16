@@ -22,7 +22,7 @@ jobs:
     - name: Run scoreboard app
       run: |
         cd scoreboard/
-        gunicorn wsgi:app &
+        DATABASE_URL=sqlite://ci.db gunicorn wsgi:app &
     - name: Build Docker image
       run: |
         docker build --build-arg VCS_REF=`git rev-parse --short HEAD` --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` -t $DOCKER_REPO scoreboard/
