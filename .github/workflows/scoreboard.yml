@@ -18,8 +18,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        apt update
-        apt install libmysqlclient-dev libpq-dev
+        sudo apt-get update
+        sudo apt-get install libmysqlclient-dev libpq-dev
         pip install -r scoreboard/requirements.txt
     - name: Run scoreboard app
       run: |
