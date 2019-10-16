@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 
 jobs:
   include:
@@ -15,8 +15,10 @@ jobs:
         - gunicorn wsgi:app &
     - stage: build docker image
       if: branch = master
-      sudo: required
       language: minimal
+      sudo: required
+      services:
+        - docker
       env: DOCKER_REPO=chrisx8/ballzzz-scoreboard:latest
       script:
         - docker build --build-arg VCS_REF=`git rev-parse --short HEAD` --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` -t $DOCKER_REPO scoreboard/
