@@ -13,8 +13,6 @@ jobs:
       script:
         - cd scoreboard/
         - gunicorn wsgi:app &
-        - sleep 2
-        - ps -au | grep gunicorn
     - stage: build docker image
       if: branch = master
       env: DOCKER_REPO=chrisx8/ballzzz-scoreboard:latest
