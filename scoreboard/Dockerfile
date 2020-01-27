@@ -1,9 +1,5 @@
 FROM python:3-alpine
 
-ARG VCS_REF
-LABEL org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.vcs-url="https://github.com/chrisx8/Ballzzz"
-
 # Install system packages
 RUN apk add --no-cache postgresql-dev mariadb-connector-c-dev && \
     echo 'nameserver 127.0.0.11' > /etc/resolv.conf && \

@@ -8,9 +8,8 @@ jobs:
       env: DATABASE_URL=sqlite:///ci.db
       language: python
       python:
-        - "3.6"
+        - "3.8"
       cache: pip
-      env: DATABASE_URL=sqlite:///site.db
       install:
         - pip install -r scoreboard/requirements.txt
       script:
@@ -25,7 +24,7 @@ jobs:
       services:
         - docker
       install:
-        - docker build --build-arg VCS_REF=`git rev-parse --short HEAD` -t $DOCKER_REPO scoreboard/
+        - docker build -t $DOCKER_REPO scoreboard/
       script:
         - docker run -p 127.0.0.1:8000:8000 -e DATABASE_URL=sqlite:///ci.db "$DOCKER_REPO" &
         - sleep 5
