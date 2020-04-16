@@ -23,7 +23,7 @@ jobs:
       services:
         - docker
       install:
-        - docker build -t $DOCKER_REPO scoreboard/
+        - docker build --build-arg VCS_REF=`git rev-parse --short HEAD` -t $DOCKER_REPO scoreboard/
       script:
         - docker run -p 127.0.0.1:8000:8000 -e DATABASE_URL=sqlite:///ci.db "$DOCKER_REPO" &
         - sleep 5

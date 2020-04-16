@@ -1,6 +1,7 @@
 # Ballzzz Scoreboard
 
-[![Build Status](https://travis-ci.com/chrisx8/Ballzzz.svg?branch=master)](https://travis-ci.com/chrisx8/Ballzzz)
+[![Build status](https://travis-ci.com/chrisx8/Ballzzz.svg?branch=master)](https://travis-ci.com/chrisx8/Ballzzz)
+[![Docker image commit](https://images.microbadger.com/badges/commit/chrisx8/ballzzz-scoreboard.svg)](https://microbadger.com/images/chrisx8/ballzzz-scoreboard)
 
 This folder contains the scoreboard webapp for Ballzzz.
 

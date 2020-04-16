@@ -28,6 +28,9 @@ Note: Commits signed with GPG key ID F6C6CFB7122581AE are valid.
 
 ## Scoreboard
 
+[![Build status](https://travis-ci.com/chrisx8/Ballzzz.svg?branch=master)](https://travis-ci.com/chrisx8/Ballzzz)
+[![Docker image commit](https://images.microbadger.com/badges/commit/chrisx8/ballzzz-scoreboard.svg)](https://microbadger.com/images/chrisx8/ballzzz-scoreboard)
+
 See scoreboard documentation [here](scoreboard/README.md).
 
 ---
