@@ -1,0 +1,21 @@
+name: scoreboard-test
+on:
+  push:
+    branches-ignore: master
+  pull_request:
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:///ci.db
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: pip install -r scoreboard/requirements.txt
+    - name: Test
+      run: |
+        cd scoreboard/
+        gunicorn wsgi:app -b 127.0.0.1:8000 &
+        sleep 3
+        curl -Lf localhost:8000
