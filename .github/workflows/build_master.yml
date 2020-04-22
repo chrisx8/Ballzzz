@@ -1,4 +1,4 @@
-name: build
+name: scoreboard-build
 on:
   push:
     branches: master
