@@ -1,11 +1,5 @@
 FROM python:3-slim
 
-ARG VCS_REF
-LABEL org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.vcs-url="https://github.com/chrisx8/Ballzzz"
-
-RUN echo 'nameserver 127.0.0.11' > /etc/resolv.conf
-
 # Install dependencies
 COPY requirements.txt /tmp/requirements.txt
 RUN apt-get update && \
