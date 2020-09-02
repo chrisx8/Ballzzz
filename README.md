@@ -2,7 +2,7 @@
 
 A CMU 15-112 Term Project.
 
-Note: Commits signed with GPG key ID F6C6CFB7122581AE are valid.
+**NOTE: This project is ARCHIVED and is NO LONGER MAINTAINED.**
 
 ## Video
 
@@ -29,9 +29,8 @@ Note: Commits signed with GPG key ID F6C6CFB7122581AE are valid.
 ## Scoreboard
 
 [![Build Status](https://github.com/chrisx8/Ballzzz/workflows/scoreboard-build/badge.svg)](https://github.com/chrisx8/Ballzzz/actions?query=workflow%3Ascoreboard-build)
-[![Docker image commit](https://images.microbadger.com/badges/commit/chrisx8/ballzzz-scoreboard.svg)](https://microbadger.com/images/chrisx8/ballzzz-scoreboard)
 
-See scoreboard documentation [here](scoreboard/README.md).
+[Scoreboard documentation](scoreboard/README.md)
 
 ---
 

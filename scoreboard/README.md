@@ -1,9 +1,10 @@
 # Ballzzz Scoreboard
 
 [![Build Status](https://github.com/chrisx8/Ballzzz/workflows/scoreboard-build/badge.svg)](https://github.com/chrisx8/Ballzzz/actions?query=workflow%3Ascoreboard-build)
-[![Docker image commit](https://images.microbadger.com/badges/commit/chrisx8/ballzzz-scoreboard.svg)](https://microbadger.com/images/chrisx8/ballzzz-scoreboard)
 
 This folder contains the scoreboard webapp for Ballzzz.
+
+**NOTE: This project is ARCHIVED and is NO LONGER MAINTAINED.**
 
 ## Deploy your own scoreboard server
 
