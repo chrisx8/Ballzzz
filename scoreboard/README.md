@@ -18,7 +18,7 @@ Use the following database URL formats when providing database URL:
 
 ### Run in Docker
 
-Image available on [Docker Hub](https://cloud.docker.com/repository/docker/chrisx8/ballzzz-scoreboard)
+Image available on [Docker Hub](https://hub.docker.com/r/chrisx8/ballzzz-scoreboard)
 
 **Please install Docker before continuing.**
 
