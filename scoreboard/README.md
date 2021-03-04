@@ -4,7 +4,7 @@
 
 This folder contains the scoreboard webapp for Ballzzz.
 
-**NOTE: This project is ARCHIVED and is NO LONGER MAINTAINED.**
+**NOTE: This project is ARCHIVED and NO LONGER MAINTAINED.**
 
 ## Deploy your own scoreboard server
 
@@ -18,14 +18,14 @@ Use the following database URL formats when providing database URL:
 
 ### Run in Docker
 
-Image available on [Docker Hub](https://hub.docker.com/r/chrisx8/ballzzz-scoreboard)
+Image available on [GHCR](https://github.com/users/chrisx8/packages/container/package/ballzzz-scoreboard)
 
 **Please install Docker before continuing.**
 
 ```bash
 # Specify your database URL here
 # Change 0.0.0.0:8000 to whatever you want your server to listen at
-docker run -d -p 0.0.0.0:8000:8000 -e DATABASE_URL=YOUR_DATABASE_URL chrisx8/ballzzz-scoreboard:latest
+docker run -d -p 0.0.0.0:8000:8000 -e DATABASE_URL=YOUR_DATABASE_URL ghcr.io/chrisx8/ballzzz-scoreboard:latest
 ```
 
 ### Run with a virtual environment

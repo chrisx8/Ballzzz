@@ -2,7 +2,7 @@
 
 A CMU 15-112 Term Project.
 
-**NOTE: This project is ARCHIVED and is NO LONGER MAINTAINED.**
+**NOTE: This project is ARCHIVED and NO LONGER MAINTAINED.**
 
 ## Video
 
